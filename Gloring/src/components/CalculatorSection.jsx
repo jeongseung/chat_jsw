@@ -20,8 +20,8 @@ const CalculatorSection = () => {
                         복잡한 정산 과정? 이제 손쉽게 계산해보세요. 다양한 판매 환경에 맞는 실시간 시뮬레이션 지원
                     </p>
                     <h5>AI를 활용하여 HS코드 추천까지</h5>
-
-                    <button className="gloring-button" onClick={() => setIsOpen(!isOpen)}>손익계산기 열기</button>
+                    {isOpen && <button className="gloring-button" onClick={() => setIsOpen(false)}>손익계산기 닫기</button>}
+                    {!isOpen && <button className="gloring-button" onClick={() => setIsOpen(!isOpen)}>손익계산기 열기</button>}
                 </div>
             </div>
             {isOpen && <Calculator/>}

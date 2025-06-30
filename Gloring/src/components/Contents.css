@@ -38,7 +38,7 @@
 }
 
 .gloring-text p.highlight {
-  color: #0077cc;
+  color: #047857;
 }
 
 .gloring-image {
@@ -53,7 +53,7 @@
 }
 
 .gloring-text h5 {
-  color: #0077cc;
+  color: #007944;
 }
 
 .gloring-text p {
@@ -62,7 +62,7 @@
 }
 
 .gloring-button {
-  background: #0077cc;
+  background: #047857;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -71,5 +71,7 @@
 }
 
 .gloring-button:hover {
-  background: #005fa3;
+  color: #007944;
+  background-color: white;
+  box-shadow: 0 0 0 2px #047857 inset;
 }

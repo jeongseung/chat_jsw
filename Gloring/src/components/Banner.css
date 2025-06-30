@@ -1,6 +1,6 @@
 
 .box {
-  width: 100vw;
+  width: 100%;
   height: 90vh;
   position: relative;
   overflow: hidden;
@@ -11,7 +11,7 @@
   opacity: .4;
   position: absolute;
   top: 3%;
-  background: rgb(0, 68, 255);
+  background: rgb(0, 110, 64);
   width: 100vw;
   height: 100vw;
   margin-top: -50%;
@@ -27,7 +27,7 @@
 .wave.-two {
   animation: drift 70000ms infinite linear;
   opacity: .1;
-  background: rgb(251, 255, 0);
+  background: rgb(255, 217, 0);
 }
 
 .box:after {

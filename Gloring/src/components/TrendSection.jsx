@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import img from '../assets/trend.jpg'
+import TrendInsight from './TrendInsight'
 
 const TrendSection = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
     return (
         <section id="trend" className="gloring-section gloring-trend">
             <div className="gloring-section-inner">
@@ -10,7 +13,8 @@ const TrendSection = () => {
                     <h2>트렌드 인사이트</h2>
                     <p>최신 급상승 검색량을 통한 수요 급증 트렌드 분석</p>
                     <h5>셀러의 타깃에 맞게 필터링 제공</h5>
-                    <button className="gloring-button">트렌드 인사이트 열기</button>
+                    {isOpen && <button className="gloring-button" onClick={() => setIsOpen(false)}>트렌드 인사이트 닫기</button>}
+                    {!isOpen && <button className="gloring-button" onClick={() => setIsOpen(!isOpen)}>트렌드 인사이트 열기</button>}
                 </div>
                 <img
                     src={img}
@@ -18,6 +22,7 @@ const TrendSection = () => {
                     className="gloring-image"
                 />
             </div>
+            {isOpen && <TrendInsight/>}
         </section>
     )
 }

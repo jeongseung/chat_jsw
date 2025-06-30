@@ -1,22 +1,17 @@
 import React from 'react'
-import './Main.css'
-import CalculatorSection from './CalculatorSection'
-import TrendSection from './TrendSection'
-import SlideToggle from './SlideToggle'
+import Banner from './Banner'
+import Contents from './Contents'
+import Header from './Header'
+import Footer from './Footer'
 
 const Main = () => {
   return (
-    <div className='main-container'>
-        <div className='main-content'>
-            <h2>셀러들의 고민을 해결할</h2>
-            <p>글로링의 솔루션</p>
-        </div>
-        <div className='gloring-section'>
-          <CalculatorSection/>
-          <TrendSection/> 
-        </div>
+    <div>
+        <Header/>
+        <Banner/>
+        <Contents/>
+        <Footer/>
     </div>
-    
   )
 }
 
