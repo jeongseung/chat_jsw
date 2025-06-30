@@ -1,0 +1,85 @@
+.calculator {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.calculator-title {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.calculator-desc {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.calculator-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.calculator-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.calculator-group {
+  flex: 1 1 calc(25% - 1rem);
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+}
+
+.calculator-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.calculator-group input,
+.calculator-group select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.375rem;
+}
+
+.calculator-summary {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+
+.summary-box h4 {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.summary-box p {
+  font-size: 1.25rem;
+  color: #2e7d32;
+}
+
+.calculator-actions {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.submit-button {
+  background-color: #007944;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #006636;
+}

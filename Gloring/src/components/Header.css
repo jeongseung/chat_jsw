@@ -1,0 +1,38 @@
+.header {
+  background: linear-gradient(to bottom, white, #f3f4f6);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100vw;
+}
+
+.header-inner {
+  max-width: 1800px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+
+.nav a {
+  margin: 3rem;
+  text-decoration: none;
+  color: #333;
+}
+
+.login-btn {
+  margin-right: 3rem;
+  text-decoration: none;
+  text-align: center;
+  color: #333;
+  width: 6%;
+  padding: 0.5rem;
+  border-radius: 10%;
+}
+
+.login-btn:hover {
+  color: white;
+  
+}
