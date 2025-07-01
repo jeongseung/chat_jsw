@@ -11,6 +11,8 @@ export default function Calculator() {
           <div className="calculator-basic">
             <label>품목명 {'>'}</label>
             <input type="text" placeholder="상세하게 적어주세요. Ex) 가죽 재질의 팔찌"></input>
+            <button>HS 코드 조회</button>
+
             <label>원산지 {'>'}</label>
             <input type="text" placeholder="구매 사이트 상세페이지 참조"></input>
             <button>Ai 검색</button>
@@ -19,18 +21,33 @@ export default function Calculator() {
           <div className="calculator-purchase">
 
           <div className="calculator-group">
-            <label>관세청 고시 환율</label>
+            <label>HS 코드</label>
+            <input type="text" placeholder="예) 0000.00" />
+          </div>
+          <div className="calculator-group">
+            <label>환율</label>
+            <select>
+              <option>중국</option>
+              <option>EU</option>
+              <option>베트남</option>
+              <option>인도네시아</option>
+            </select>
             <input type="text" placeholder="1317.27" />
           </div>
 
           <div className="calculator-group">
-            <label>최근 가격</label>
+            <label>매입가</label>
             <input type="text" placeholder="5390원" />
           </div>
 
           <div className="calculator-group">
             <label>운임비</label>
             <input type="text" placeholder="3200원" />
+          </div>
+
+          <div className="calculator-group">
+            <label>기타 비용</label>
+            <input type="number" placeholder="예) 기타 부대 비용" />
           </div>
 
           <div className="calculator-group">
@@ -43,10 +60,7 @@ export default function Calculator() {
             <input type="text" placeholder="8%" />
           </div>
 
-          <div className="calculator-group">
-            <label>기타 제품 내용</label>
-            <input type="text" placeholder="예: 브랜드, 원산지 등" />
-          </div>
+          
         </div>
 
         <div className="calculator-sales">
