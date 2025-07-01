@@ -1,0 +1,169 @@
+/* 페이지 전체의 기본 스타일 */
+p {
+    margin-bottom: 4px;
+}
+
+.join {
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 수평 중앙 정렬 */
+  justify-content: center; /* 수직 중앙 정렬 */
+  min-height: 100vh; /* 뷰포트 전체 높이를 최소값으로 설정 */
+  background-color: #ffffff; /* 로그인 페이지와 동일한 연한 회색 배경 */
+  font-family: 'Arial', sans-serif; /* 로그인 페이지와 동일한 폰트 */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 메인 헤딩 스타일 (로그인 페이지 h2와 유사하게, 폼 안에 위치) */
+.join h2 {
+  color: #333;
+  margin-top: 0px; /* 로
+  font-size: 24px; /* 이미지에서 보이는 헤딩 크기 */
+  font-weight: bold; /* 이미지에서 보이는 헤딩 굵기 */
+  text-align: left; /* 이미지처럼 왼쪽 정렬 */
+  width: 100%; /* 폼 너비에 맞춰 정렬 */
+}
+
+/* 폼 컨테이너 (.login-form과 유사하게) */
+.join-from {
+  background-color: #fff;
+  padding: 40px; /* 로그인 폼의 패딩을 기준으로 조정 */
+  border-radius: 10px; /* 로그인 폼과 동일한 테두리 반경 */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* 로그인 폼과 동일한 그림자 */
+  width: 100%;
+  max-width: 380px; /* 로그인 폼 (300px)보다 조금 크게 조정, 이미지에 맞춰 */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 각 입력 그룹 (.join-input-group) 사이의 간격 */
+}
+
+/* 입력 필드 그룹 (이름, 아이디, 비밀번호, 이메일) */
+/* .join-from의 gap으로 간격 제어 */
+.join-input-group {
+    /* 별도의 margin-bottom 필요 없음 */
+}
+
+/* 입력 필드 제목 (p 태그) */
+.join-input-group p {
+    font-size: 16px; /* 로그인 input p와 동일 */
+    font-weight: 500; /* 로그인 input p와 동일 */
+    padding-left: 3px; /* 로그인 input p와 동일 */
+    margin-bottom: 8px; /* 입력 필드와의 간격 */
+    margin-top: 0; /* 기본 p 태그의 상단 마진 제거 */
+    color: #333; /* 텍스트 색상 */
+}
+
+/* 일반적인 입력 필드 (.login-input input과 유사하게) */
+.join-from input[type="text"],
+.join-from input[type="password"] {
+  height: 40px; /* 로그인 input (30px)보다 크게, 이미지에 맞춰 */
+  font-size: 16px; /* 로그인 input과 동일 */
+  width: 100%; /* 부모 너비에 맞춤 */
+  border-radius: 0.375rem; /* 로그인 input과 동일 */
+  border: 1.84px solid #ccc; /* 로그인 input과 동일 */
+  padding: 0.35rem 10px; /* 좌우 패딩 추가 */
+  box-sizing: border-box;
+  margin: 0; /* 기본 마진 제거 */
+}
+
+/* 이메일 입력 필드와 도메인, @ 기호 정렬 */
+.join-email-group {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* @ 기호 주변 간격 */
+    /* 이메일 아이디 input, @, 도메인 input, select가 한 줄에 나란히 오는 구조가 아님
+       이는 폼 이미지의 디자인을 따른 것임. */
+}
+
+.join-email-group input[type="text"]:first-of-type { /* 이메일 아이디 */
+    flex: 1; /* 가용한 공간을 모두 차지 */
+    /* width: auto; 를 사용하면 flex에서 잘 작동 */
+    margin-bottom: 0; /* 그룹 내부에서 불필요한 마진 제거 */
+}
+
+.join-email-group span { /* @ 기호 */
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    line-height: 40px; /* 인풋 높이와 맞춤 */
+}
+
+.join-email-group input[type="text"]:last-of-type { /* 이메일 도메인 직접 입력 */
+    flex: 1; /* 가용한 공간을 모두 차지 */
+    /* width: auto; */
+    margin-bottom: 0; /* 그룹 내부에서 불필요한 마진 제거 */
+}
+
+/* 셀렉트 박스 스타일 */
+.join-from select {
+  height: 40px; /* 입력 필드와 높이 통일 */
+  font-size: 16px;
+  width: 100%;
+  border-radius: 0.375rem; /* 로그인 input과 동일 */
+  border: 1.84px solid #ccc; /* 로그인 input과 동일 */
+  padding: 0.35rem 10px; /* 좌우 패딩 추가 */
+  appearance: none; /* 브라우저 기본 셀렉트 스타일 제거 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.3%203.2-16.1%208.1-3.9%204.9-4.8%2011.3-2.6%2017.2l138.6%20173.6c4.3%205.6%2011.6%209.2%2019.8%209.2s15.5-3.6%2019.8-9.2L289.4%2094c2.2-5.9%201.3-12.3-2.6-17.2z%22%2F%3E%3C%2Fsvg%3E'); /* 커스텀 드롭다운 화살표 */
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 12px;
+  padding-right: 30px; /* 화살표를 위한 공간 확보 */
+  margin-top: 8px; /* 이메일 입력 그룹과의 간격 */
+  box-sizing: border-box;
+}
+
+/* 읽기 전용 이메일 도메인 입력 필드 스타일 */
+.join-from input[type="text"][readOnly] {
+  background-color: #f8f8f8; /* 살짝 다른 배경색 */
+  cursor: not-allowed;
+}
+
+/* 입력 필드 호버 및 포커스 효과 (.login-input input:hover/focus와 통일) */
+.join-from input:hover,
+.join-from select:hover {
+    border-color: #047857; /* 포인트 컬러 */
+}
+
+.join-from input:focus,
+.join-from select:focus {
+    border-color: #047857; /* 포인트 컬러 */
+    outline: none;
+    /* 로그인 페이지에는 box-shadow가 없으므로 제거 (혹은 얇게 추가 가능) */
+    /* box-shadow: 0 0 0 1px #047857; */
+}
+
+/* 플레이스홀더 텍스트 색상 및 크기 (.login-input input::placeholder와 통일) */
+.join-from input::placeholder {
+  font-size: 14px;
+  color: #ababab; /* 로그인 페이지와 동일 */
+  padding-left: 2px; /* 로그인 페이지와 동일 */
+}
+
+/* 회원가입 버튼 (.login-button과 유사하게) */
+.join-submit-button {
+  height: 50px; /* 로그인 버튼과 동일 */
+  text-align: center;
+  background-color: #047857; /* 포인트 컬러 */
+  color: white;
+  border-radius: 0.375rem; /* 로그인 버튼과 동일 */
+  border: 2px solid #047857; /* 로그인 버튼과 동일 */
+  width: 100%; /* 부모 너비에 맞춤 */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 텍스트 중앙 정렬 */
+  margin-top: 10px; /* 폼 하단 간격 */
+  font-weight: 500;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.join-submit-button:hover {
+  background-color: white; /* 로그인 버튼 호버와 동일 */
+  border-color: #047857; /* 로그인 버튼 호버와 동일 */
+  color: #047857; /* 로그인 버튼 호버와 동일 */
+}
