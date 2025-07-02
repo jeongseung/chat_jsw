@@ -13,7 +13,7 @@ const Join = () => {
   const [emailId, setEmailId] = useState('');
 
   // ⭐️⭐️⭐️ 이메일 도메인 기본값 및 직접 입력 모드 초기화 ⭐️⭐️⭐️
-  const [emailDomain, setEmailDomain] = useState('self'); // 기본값을 'self'로 설정
+  const [emailDomain, setEmailDomain] = useState(''); // 기본값을 'self'로 설정
   const [isSelfInput, setIsSelfInput] = useState(true);   // isSelfInput을 true로 초기화
 
   const DomainChange = (e) => {
@@ -32,7 +32,7 @@ const Join = () => {
 
     console.log("회원가입 정보:", {
         name,
-        id,
+      
         password,
         email: `${emailId}@${emailDomain}`
     });
@@ -59,17 +59,7 @@ const Join = () => {
             />
           </div>
 
-          {/* 아이디 입력 그룹 */}
-          <div className='join-input-group'>
-            <p>아이디</p>
-            <input 
-              type='text' 
-              placeholder='아이디를 입력해주세요' 
-              name='id'
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-            />
-          </div>
+
 
           {/* 비밀번호 입력 그룹 */}
           <div className='join-input-group'>
@@ -93,16 +83,19 @@ const Join = () => {
                 value={emailId}
                 onChange={(e) => setEmailId(e.target.value)}
               />
-              <span>@</span> {/* @ 기호를 span으로 감싸서 CSS 적용 */}
+
+
+              
+              <span> @ </span> {/* @ 기호를 span으로 감싸서 CSS 적용 */}
               <input 
                 type='text' 
-                value={isSelfInput ? '' : emailDomain} // isSelfInput이 true면 빈 문자열, 아니면 emailDomain 값
+                value={isSelfInput ? emailDomain:''} // isSelfInput이 true면 빈 문자열, 아니면 emailDomain 값
                 placeholder='직접 입력'
                 onChange={(e) => isSelfInput && setEmailDomain(e.target.value)}
                 readOnly={!isSelfInput}
               />
             </div>
-            <select onChange={DomainChange} value={emailDomain}>
+            <select onChange={DomainChange} value={isSelfInput ? 'self' : emailDomain}>
               <option value="">선택</option>
               <option value="naver.com">naver.com</option>
               <option value="gmail.com">gmail.com</option>

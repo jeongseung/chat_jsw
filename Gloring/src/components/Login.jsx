@@ -13,7 +13,7 @@ const Login = ({setAuthenticate}) => {
     }
 
     const goToJoin = (e) => {
-        e.preventDefault
+        e.preventDefault();
         navigate("/Join")
     }
 
@@ -23,15 +23,15 @@ const Login = ({setAuthenticate}) => {
         <h2>로그인</h2>
             <form>
                 <div className='login-input'>
-                    <p>아이디</p>
-                    <input type='text' placeholder='아이디를 입력해주세요.' className='id'/> <br/>
+                    <p>이메일</p>
+                    <input type='text' placeholder='이메일을 입력해주세요.' className='emailId'/> <br/>
                     <p>비밀번호</p>
                     <input type='password' placeholder='비밀번호를 입력해주세요.' className='pw'/>
                 </div>
                 <div className='btn'>
                     <label className='check'>
                     <input type='checkbox'/>
-                    <span>아이디 저장하기</span>
+                    <span>이메일 저장하기</span>
                     </label>
                     <input type='submit'
                     className='login-button'
