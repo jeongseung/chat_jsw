@@ -1,0 +1,127 @@
+input {
+    margin: 0;
+}
+
+p {
+    margin-bottom: 4px;
+}
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-form {
+    padding: 10px 40px 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login h2 {
+    margin-top: 50px;
+}
+
+.login-input {
+    margin-bottom: 10px;
+}
+
+.login-input p {
+    font-size: 16px;
+    font-weight: 500;
+    padding-left: 3px;
+}
+
+.login-input input {
+    height: 30px;
+    font-size: 16px;
+    width: 285px;
+    border-radius: 0.375rem;
+    border: 1.84px solid #ccc;
+    padding: 0.35rem;
+}
+
+.login-input input::placeholder {
+    font-size: 14px;
+    color: #ababab;
+    padding-left: 2px;
+}
+
+.check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.check span {
+    padding: 0px 3px 1px;
+    border-radius: 4px;
+}
+
+.check input[type='checkbox']:checked{
+    background-color: #047857;
+}
+
+.login-input input:hover {
+    border-color: #047857;
+}
+
+.login-input input:focus {
+    border-color: #047857;
+    outline: none;
+}
+
+.login-button {
+    height: 50px;
+    text-align: center;
+    background-color: #047857;
+    color: white;
+    border-radius: 0.375rem;
+    border: 2px solid #047857;
+    width: 300px;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    font-weight: 500;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.login-button:hover {
+    background-color: white;
+    border: 2px solid #047857;
+    color: #047857;
+}
+
+.join-us {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.join-button {
+    height: 30px;
+    text-align: center;
+    background-color: white;
+    color: #047857;
+    border-radius: 0.375rem;
+    border: 2px solid #047857;
+    margin-top: 13px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.join-button:hover {
+    background-color: #047857;
+    border: 2px solid #047857;
+    color: white;
+}

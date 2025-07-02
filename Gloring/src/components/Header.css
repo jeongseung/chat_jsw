@@ -1,6 +1,6 @@
 .header {
   background: linear-gradient(to bottom, white, #f3f4f6);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
   position: sticky;
   top: 0;
   z-index: 50;
@@ -11,6 +11,7 @@
 .header-inner {
   max-width: 1800px;
   margin: auto;
+  gap: 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,6 +20,15 @@
 
 .nav {
   display: flex;
+  gap: 30px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.right {
+  display: flex;
+  padding-left: 10px;
 }
 
 .nav-btn {
@@ -40,7 +50,7 @@
   transform: scaleX(1);
 }
 
-.login-btn {
+/* .login-btn {
   margin-right: 3rem;
   text-decoration: none;
   text-align: center;
@@ -48,4 +58,4 @@
   width: 6%;
   padding: 0.5rem;
   border-radius: 10%;
-}
+} */
