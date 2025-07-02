@@ -21,7 +21,7 @@ const CalculatorSection = () => {
                     </p>
                     <h5>AI를 활용하여 HS코드 추천까지</h5>
                     {isOpen && <button className="gloring-button" onClick={() => setIsOpen(false)}>손익계산기 닫기</button>}
-                    {!isOpen && <button className="gloring-button" onClick={() => setIsOpen(!isOpen)}>손익계산기 열기</button>}
+                    {!isOpen && <button className="gloring-button" onClick={() => setIsOpen(true)}>손익계산기 열기</button>}
                 </div>
             </div>
             {isOpen && <Calculator/>}
