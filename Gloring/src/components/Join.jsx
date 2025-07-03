@@ -1,53 +1,85 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./Join.css";
 
 const Join = () => {
   const navigate = useNavigate();
 
-  // 각 입력 필드를 위한 state
+  // 입력 상태 관리
   const [name, setName] = useState('');
-  const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [emailId, setEmailId] = useState('');
+  const [emailDomain, setEmailDomain] = useState('');
+  const [isSelfInput, setIsSelfInput] = useState(true);
 
-  // ⭐️⭐️⭐️ 이메일 도메인 기본값 및 직접 입력 모드 초기화 ⭐️⭐️⭐️
-  const [emailDomain, setEmailDomain] = useState(''); // 기본값을 'self'로 설정
-  const [isSelfInput, setIsSelfInput] = useState(true);   // isSelfInput을 true로 초기화
+  // 이메일 중복체크 관련 상태
+  const [emailCheckMessage, setEmailCheckMessage] = useState('');
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
 
+  // 이메일 도메인 선택/직접입력 핸들러
   const DomainChange = (e) => {
     const value = e.target.value;
     if (value === 'self') {
-      setIsSelfInput(true); // 직접 입력 모드 활성화
-      setEmailDomain(''); // 직접 입력 시 도메인 필드 초기화 (사용자가 입력하게)
+      setIsSelfInput(true);
+      setEmailDomain('');
     } else {
-      setIsSelfInput(false); // 선택 모드 활성화
-      setEmailDomain(value); // 선택된 도메인으로 설정
+      setIsSelfInput(false);
+      setEmailDomain(value);
     }
-  }
-  
+  };
+
+  // 이메일 형식 검사
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  // 이메일 중복체크 버튼 클릭 시
+  const handleEmailCheck = () => {
+    const fullEmail = `${emailId}@${emailDomain}`;
+    if (!emailId || !emailDomain) {
+      setEmailCheckMessage('이메일을 모두 입력해주세요.');
+      setIsEmailChecked(false);
+      return;
+    }
+    if (!validateEmail(fullEmail)) {
+      setEmailCheckMessage('올바른 이메일 형식이 아닙니다.');
+      setIsEmailChecked(false);
+      return;
+    }
+    // 예시 중복 이메일 리스트 (실제 서비스에서는 서버에서 체크)
+    const existingEmails = ['test@naver.com', 'hello@gmail.com'];
+    if (existingEmails.includes(fullEmail)) {
+      setEmailCheckMessage('이미 사용 중인 이메일입니다.');
+      setIsEmailChecked(false);
+    } else {
+      setEmailCheckMessage('사용 가능한 이메일입니다!');
+      setIsEmailChecked(true);
+    }
+  };
+
+  // 회원가입 제출
   const goToLogin = (e) => {
-    e.preventDefault(); // 기본 폼 제출 동작(새로고침) 방지
-
+    e.preventDefault();
+    if (!isEmailChecked) {
+      setEmailCheckMessage('이메일 중복체크를 해주세요.');
+      return;
+    }
+    // 실제 회원가입 로직 (API 호출 등) 추가
     console.log("회원가입 정보:", {
-        name,
-      
-        password,
-        email: `${emailId}@${emailDomain}`
+      name,
+      password,
+      email: `${emailId}@${emailDomain}`
     });
-
-    // 실제 회원가입 로직 (API 호출 등)은 여기에 추가
-    navigate("/Login"); // 로그인 페이지로 이동
-  }
+    navigate("/Login");
+  };
 
   return (
     <div className='join'>
-      {/* 폼 전체를 감싸는 컨테이너 */}
       <div className='join-from'>
-        <h2>회원가입</h2> {/* 이미지처럼 H2가 폼 안에 위치 */}
+        <h2>회원가입</h2>
         <form onSubmit={goToLogin}>
-          {/* 이름 입력 그룹 */}
+          {/* 이름 입력 */}
           <div className='join-input-group'>
             <p>이름</p>
             <input 
@@ -58,10 +90,7 @@ const Join = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-
-
-
-          {/* 비밀번호 입력 그룹 */}
+          {/* 비밀번호 입력 */}
           <div className='join-input-group'>
             <p>비밀번호</p>
             <input 
@@ -72,8 +101,7 @@ const Join = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-
-          {/* 이메일 입력 그룹 */}
+          {/* 이메일 입력 + 중복체크 */}
           <div className='join-input-group'>
             <p>이메일</p>
             <div className='join-email-group'>
@@ -81,17 +109,22 @@ const Join = () => {
                 type='text' 
                 placeholder='이메일 아이디'
                 value={emailId}
-                onChange={(e) => setEmailId(e.target.value)}
+                onChange={(e) => {
+                  setEmailId(e.target.value);
+                  setIsEmailChecked(false);
+                }}
               />
-
-
-              
-              <span> @ </span> {/* @ 기호를 span으로 감싸서 CSS 적용 */}
+              <span> @ </span>
               <input 
                 type='text' 
-                value={isSelfInput ? emailDomain:''} // isSelfInput이 true면 빈 문자열, 아니면 emailDomain 값
+                value={isSelfInput ? emailDomain : ''} 
                 placeholder='직접 입력'
-                onChange={(e) => isSelfInput && setEmailDomain(e.target.value)}
+                onChange={(e) => {
+                  if (isSelfInput) {
+                    setEmailDomain(e.target.value);
+                    setIsEmailChecked(false);
+                  }
+                }}
                 readOnly={!isSelfInput}
               />
             </div>
@@ -102,8 +135,20 @@ const Join = () => {
               <option value="daum.net">daum.net</option>
               <option value="self">직접 입력</option>
             </select>
+            {/* 중복체크 메시지 */}
+            {emailCheckMessage && (
+              <div className="email-check-message">{emailCheckMessage}</div>
+            )}
+            {/* 이메일 중복체크 버튼 (회원가입 버튼과 동일한 스타일) */}
+            <button
+              type="button"
+              className="join-submit-button email-check-btn"
+              onClick={handleEmailCheck}
+              style={{ marginTop: '10px' }}
+            >
+              이메일 중복체크
+            </button>
           </div>
-
           {/* 회원가입 버튼 */}
           <input 
             type='submit'
@@ -113,7 +158,7 @@ const Join = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Join
+export default Join;
