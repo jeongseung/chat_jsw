@@ -23,6 +23,7 @@ p {
   font-weight: bold; /* 이미지에서 보이는 헤딩 굵기 */
   text-align: left; /* 이미지처럼 왼쪽 정렬 */
   width: 100%; /* 폼 너비에 맞춰 정렬 */
+  text-align: center;
 }
 
 /* 폼 컨테이너 (.login-form과 유사하게) */
