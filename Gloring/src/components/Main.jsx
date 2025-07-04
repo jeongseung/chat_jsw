@@ -3,6 +3,7 @@ import './Main.css'
 import CalculatorSection from './CalculatorSection'
 import TrendSection from './TrendSection'
 import Login from './Login'
+import YoutubeSession from './YoutubeSession'
 
 const Main = () => {
   return (
@@ -14,6 +15,7 @@ const Main = () => {
         <div className='gloring-section'>
           <CalculatorSection/>
           <TrendSection/> 
+          <YoutubeSession/>
         </div>
     </div>
     

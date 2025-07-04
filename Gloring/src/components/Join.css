@@ -67,6 +67,7 @@ p {
   padding: 0.35rem 10px; /* 좌우 패딩 추가 */
   box-sizing: border-box;
   margin: 0; /* 기본 마진 제거 */
+  text-align: left;
 }
 
 /* 이메일 입력 필드와 도메인, @ 기호 정렬 */
