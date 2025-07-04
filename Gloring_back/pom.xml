@@ -8,10 +8,13 @@
 		<version>3.5.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>kr.smhrd.navertest</groupId>
-	<artifactId>navertest</artifactId>
+	<!-- <groupId>kr.smhrd.navertest</groupId> -->
+	
+	<groupId>com.smhrd.gloring</groupId>
+	
+	<artifactId>gloring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bonlunch-1</name>
+	<name>gloring</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

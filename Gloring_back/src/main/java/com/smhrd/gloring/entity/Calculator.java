@@ -8,8 +8,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 @Table(name="calculator")
 public class Calculator {
     @Id
@@ -61,5 +73,6 @@ public class Calculator {
     @Column(nullable = false)
     private LocalDate saveDate;
 
+    private Integer cost;
     // getters and setters
 }
