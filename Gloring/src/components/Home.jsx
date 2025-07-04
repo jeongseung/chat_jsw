@@ -3,6 +3,7 @@ import Footer from './Footer'
 import Main from './Main'
 import Banner from './Banner'
 import Header from './Header'
+import YoutubeSession from "./YoutubeSession";
 
 const Home = ({authenticate, setAuthenticate}) => {
 
