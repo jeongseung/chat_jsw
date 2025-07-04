@@ -21,7 +21,7 @@ _ = load_dotenv(find_dotenv())
 
 # LLM 모델을 한 번만 초기화하여 재사용 (효율성)
 llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
+    model="gpt-4.1-mini",
     api_key=os.getenv("OPENAI_API_KEY"),
     temperature=0.1, # 사실 기반 응답의 일관성을 위해 온도를 낮게 설정
 )
@@ -56,6 +56,7 @@ llm = ChatOpenAI(
 # [{{"hscode":"8211.92-1000","item":"주방용 식칼"}},{{"hscode":"8211.92-2000","item":"정육용 칼"}},{{"hscode":"8211.93-0000","item":"접이식 포켓나이프"}},{{"hscode":"8211.92-3000","item":"사냥용 칼"}},{{"hscode":"8208.30-0000","item":"기계용 절단 칼날"}},{{"hscode":"9307.00-0000","item":"의장용 검"}}]
 # """
 
+#hs 프롬프트 작성
 hs_code_system_prompt = """
 ### Role and Goal
 You are a highly specialized AI assistant for classifying Harmonized System (HS) codes. Your sole purpose is to convert a user's product name into a structured, minified JSON array of potential HS codes. The output will be directly parsed by a computer program, so absolute adherence to the format is critical.
@@ -113,44 +114,70 @@ async def get_hs_codes(req: HscodeRequest):
         raise HTTPException(status_code=500, detail="예상치 못한 오류가 발생했습니다.")
 
 
+#FTA 프롬프트 작성
+fta_system_prompt = """Role and Goal
+You are a highly accurate trade data AI assistant. Your goal is to determine FTA applicability and tariff rates for goods imported into South Korea based on a provided list of partner countries.
 
-# =================================================================
-# 4. FTA 및 관세율 조회 기능 (/getFta) - 신규 추가
-# =================================================================
+Context: South Korea's Active FTA Partner Countries
+For your reference, here is a list of countries and economic blocs that have an active Free Trade Agreement with South Korea. Use this list as the single source of truth for FTA status.
 
-# FTA 조회를 위한 새로운 시스템 프롬프트 (영문)
-fta_system_prompt = """
-You are an expert on international trade, specializing in Free Trade Agreements (FTAs) and tariff rates concerning South Korea.
-Your task is to provide information about the FTA status and applicable tariff rate for a given HS code and country of origin.
+Americas: United States, Canada, Chile, Peru, Colombia, Central America (Costa Rica, El Salvador, Honduras, Nicaragua, Panama)
 
-The user will provide an HS code and an origin country.
+Europe: European Union (EU), United Kingdom (UK), EFTA (Switzerland, Norway, Iceland, Liechtenstein), Turkey
 
-Follow these rules strictly:
-1.  Determine if an active FTA exists between South Korea and the provided origin country.
-2.  If an FTA exists:
-    - State the name of the FTA (e.g., "Korea-US FTA").
-    - Find the preferential tariff rate for the given HS code under that specific FTA.
-3.  If no FTA exists:
-    - Clearly state that no FTA is in effect.
-    - Provide the standard, non-preferential tariff rate for that HS code in South Korea. This is often called the 'Basic Tariff Rate' or 'WTO MFN Rate'.
-4.  You MUST return your answer ONLY as a single, minified JSON object. Do not include any other text, explanations, or markdown formatting.
-5.  The JSON object MUST contain exactly two keys: "fta_status" (string) and "tariff_rate" (string).
+Asia-Pacific: Australia, New Zealand, Vietnam, Singapore, India, China, Philippines, Indonesia
 
-Example 1 (FTA exists):
+Regional: ASEAN (Brunei, Cambodia, Indonesia, Laos, Malaysia, Myanmar, Philippines, Singapore, Thailand, Vietnam), RCEP
+
+Middle East: Israel
+
+Logic and Instructions
+You will receive an HS code and an origin country. Follow this logic strictly:
+
+Check for FTA: Look up the provided {origin_country} in the 'South Korea's Active FTA Partner Countries' list above. (Note: A country like "Germany" is part of the "European Union (EU)").
+
+If an FTA EXISTS (the country is on the list):
+
+The JSON key "fta_status" MUST be boolean true.
+
+Find the preferential tariff rate for the {hscode} under that specific FTA. The most common rate is 0.
+
+The JSON key "tariff_rate" MUST be an integer representing only the numerical tariff rate. Example: 0.
+
+If an FTA DOES NOT EXIST (the country is NOT on the list):
+
+The JSON key "fta_status" MUST be boolean false.
+
+Provide South Korea's standard, non-preferential tariff rate (this is called the 'Basic Tariff Rate' or 'WTO MFN Rate').
+
+The JSON key "tariff_rate" MUST be an integer representing only the numerical tariff rate. Example: 8.
+
+Output Format (Strictly Enforced)
+You MUST return your answer ONLY as a single, minified JSON object.
+
+DO NOT include any explanations, greetings, or markdown formatting like ```json.
+
+The JSON object must contain exactly two keys: "fta_status" (boolean) and "tariff_rate" (integer).
+
+Examples
 User Input: hscode: "8703.23-1000", origin_country: "United States"
-Your Output:
-{{"fta_status": "한-미 FTA 적용 가능", "tariff_rate": "0%"}}
 
-Example 2 (No FTA exists):
-User Input: hscode: "6204.42-0000", origin_country: "Brazil"
-Your Output:
-{{"fta_status": "브라질과 체결된 FTA 없음", "tariff_rate": "13% (기본세율)"}}
+Your Output: {{"fta_status":true,"tariff_rate":0}}
 
-Example 3 (FTA exists):
 User Input: hscode: "0805.50-1000", origin_country: "Vietnam"
-Your Output:
-{{"fta_status": "한-베트남 FTA 적용 가능", "tariff_rate": "0%"}}
+
+Your Output: {{"fta_status":true,"tariff_rate":0}}
+
+User Input: hscode: "6204.42-0000", origin_country: "Brazil"
+
+Your Output: {{"fta_status":false,"tariff_rate":13}}
+
+User Input: hscode: "9018.12-0000", origin_country: "Germany"
+
+Your Output: {{"fta_status":true,"tariff_rate":0}}
 """
+
+
 
 # FTA 조회를 위한 새로운 프롬프트 템플릿 및 체인
 fta_prompt = ChatPromptTemplate.from_messages([
@@ -186,3 +213,6 @@ async def get_fta_info(req: FtaRequest):
         # 기타 예외 처리
         print(f"오류 발생: {e}")
         raise HTTPException(status_code=500, detail="예상치 못한 오류가 발생했습니다.")
+    
+
+    
