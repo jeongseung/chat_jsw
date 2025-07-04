@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "./Calculator.css";
 import {useState} from 'react'
 import CalculatorLogic from "./CalculatorLogic";
@@ -29,7 +29,7 @@ export default function Calculator() {
   const [exchangeRate, setExchangeRate] = useState('CN');
   const [countryUnit, setCountryUnit] = useState(countryMap['CN']);
   const [exRate, setExRate] = useState();
-  const [money, setMoney] = useState();
+  const [foreignPurchase, setForeignPurchase] = useState("");
   const [purchase, setPurchase] = useState();
   const [displayPurchase, setDisplayPurchase] = useState();
   const [transport, setTransport] = useState();
@@ -75,6 +75,18 @@ export default function Calculator() {
   const [hsData, setHsData] = useState([]);
 
   const [selectedCode, setSelectedCode] = useState(null);
+
+  const inputRef = useRef(null);
+
+  
+  useEffect(() => {
+    // 커서를 접미사 앞 위치로 설정
+    const el = inputRef.current;
+    if (el) {
+      const pos = formatWon(displayTransport).length - 1;
+      el.setSelectionRange(pos, pos);
+    }
+  }, [displayTransport]);
 
 
   const CountryChange = (e) => {
@@ -199,13 +211,42 @@ export default function Calculator() {
     setCountryUnit(countryMap[selected]);
 
     try {
-      const response = await axios.get(`/api/exchange-rates/EU=${selectedCode}`);
-      setExchangeRate(response.data.rate);  // 응답 구조에 맞게 조정
+      const response = await axios.get(`http://localhost:8000/exchange-rate/${selected}`);
+      console.log("환율 응답 데이터:", response.data);
+      const rate = parseFloat(response.data.exchangeRate);
+
+      if (!isNaN(rate)) {
+        setExRate(rate);
+      } else {
+        alert("올바르지 않은 환율 데이터입니다.");
+      }
     } catch (error) {
-      console.error("환율 조회 실패", error);
-    }
+  console.error("환율 조회 실패", error);
+  if (error.response) {
+    console.log("응답 상태 코드:", error.response.status);
+    console.log("응답 내용:", error.response.data);
+  } else if (error.request) {
+    console.log("요청은 갔지만 응답이 없음:", error.request);
+  } else {
+    console.log("기타 에러:", error.message);
+  }
+}
   };
 
+  const handleForeignPurchaseChange = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    setForeignPurchase(value);
+
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue) && exRate > 0) {
+      const wonValue = Math.round(numValue * exRate);
+      setPurchase(wonValue);
+      setDisplayPurchase(wonValue.toLocaleString());
+    } else {
+      setPurchase(0);
+      setDisplayPurchase("");
+    }
+  };
   
   const submit = (e) => {
         e.preventDefault();
@@ -356,7 +397,7 @@ export default function Calculator() {
             <div className="calculator-group">
               <label>관세청 고시환율</label>
               <div className="exchange">
-                <select className="exchange-rate" value={exchangeRate} onChange={(e)=>setExchangeRate(e.target.value)}>
+                <select className="exchange-rate" value={exchangeRate} onChange={handleCountryChange}>
                 <option value="CN">중국</option>
                 <option value="US">미국</option>
                 <option value="JP">일본</option>
@@ -371,31 +412,42 @@ export default function Calculator() {
                 <option value="AE">아랍에미리트</option>
                 <option value="ID">인도네시아</option>
               </select>
-              <input type="number" placeholder="0%" className="exchange-rate"
-              value={formatPercent(exRate)} onChange={(e)=>setExRate(e.target.value)} readOnly/>
+              <input type="text" className="exchange-rate" value={exRate || ""} readOnly />
             </div>
           </div>
 
           <div className="calculator-group">
             <label>매입액</label>
             <div className="turn-won">
-            <input type="text" placeholder={countryUnit} pattern="[0-9]*" className="country-money"/>
-            <input type="text" placeholder="0원" pattern="[0-9]*" className="won"
-            value={formatWon(displayPurchase)} onChange={handleChange(setPurchase, setDisplayPurchase)} readOnly/>
+              <input type="text" placeholder={countryUnit} pattern="[0-9]*" className="country-money"
+              value={foreignPurchase} onChange={handleForeignPurchaseChange} />
+              <input type="text" placeholder="0원" pattern="[0-9]*" className="won"
+              value={formatWon(displayPurchase)} readOnly/>
             </div>
           </div>
 
           <div className="calculator-group">
             <label>운임비</label>
-            <input type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
-            value={formatWon(displayTransport)} onChange={handleChange(setTransport, setDisplayTransport)}/>
+            <input ref={inputRef} type="text" placeholder="0원"
+            value={formatWon(displayTransport)} onChange={handleChange(setTransport, setDisplayTransport)}
+            onClick={() => {const el = inputRef.current;
+              if (el) {
+            const pos = formatWon(displayTransport).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}
+            onFocus={() => {
+            const el = inputRef.current;
+              if (el) {
+            const pos = formatWon(displayTransport).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}/>
           </div>
 
           <div className="calculator-group">
             <label>매입 시 발생한 기타 비용</label>
             <input type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displaySubCost)} onChange={handleChange(setSubCost, setDisplaySubCost)}/>
           </div>
 

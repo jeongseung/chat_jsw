@@ -8,7 +8,7 @@ const CalculatorLogic = ({
 }) => {
     useEffect(()=> {
         // 숫자로 변환
-        const exchange = parseFloat(exRate) || 0;
+        // const exchange = parseFloat(exRate) || 0;
         const buy = parseFloat(purchase) || 0;
         const delivery = parseFloat(transport) || 0;
         const etcCost = parseFloat(subCost) || 0; // 매입 기타 비용
@@ -24,9 +24,11 @@ const CalculatorLogic = ({
 
         // 계산식
         // 관세
-        const tariffAmount = (exchange * buy) * tariffRate;
+        // const tariffAmount = (exchange * buy) * tariffRate;
+        const tariffAmount = buy * tariffRate;
         // 관세 포함 원가 + 기타 비용 (운송비 등)
-        const baseCost = (exchange * buy) + tariffAmount + delivery + etcCost;
+        // const baseCost = (exchange * buy) + tariffAmount + delivery + etcCost;
+        const baseCost = buy + tariffAmount + delivery + etcCost;
         // 부가세
         const vatAmount = baseCost * vatRate;
         // 매입 시 발생한 비용
