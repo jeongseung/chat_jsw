@@ -17,7 +17,6 @@ const Header = () => {
           <a href='#trend'className='nav-btn'>트렌드 인사이트</a>
         </nav>
         <nav className='right'>
-          <a href='/mypage' className='nav-btn'>마이페이지</a>
           <a href='/login' className='nav-btn'>로그인</a>
         </nav>
       </div>

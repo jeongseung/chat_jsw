@@ -29,6 +29,7 @@ p {
 
 .login-input {
     margin-bottom: 10px;
+    text-align: left;
 }
 
 .login-input p {
@@ -50,6 +51,7 @@ p {
     font-size: 14px;
     color: #ababab;
     padding-left: 2px;
+    text-align: left;
 }
 
 .check {
