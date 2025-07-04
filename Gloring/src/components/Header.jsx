@@ -1,9 +1,13 @@
 import React from 'react'
 import './Header.css'
+import useScrollDirection from '../hooks/useScrollDirection'
 
 const Header = () => {
+
+  const scrollDirection = useScrollDirection();
+
   return (
-    <header className='header'>
+    <header className={`header ${scrollDirection === 'down' ? 'hide' : ''}`}>
       <div className='header-inner'>
        <h1
   className="logo"
