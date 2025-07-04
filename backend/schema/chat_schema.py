@@ -15,5 +15,5 @@ class FtaRequest(BaseModel):
 
 # /getFta 응답 스키마
 class FtaResponse(BaseModel):
-    fta_status: str = Field(..., description="FTA 협정 유무 및 명칭 (e.g., '한-미 FTA 적용 가능')")
-    tariff_rate: str = Field(..., description="적용 관세율 (e.g., '0%', '8% (기본세율)')")
+    fta_status: bool = Field(..., description="FTA 협정 유무 (e.g., 'true')")
+    tariff_rate: int = Field(..., description="적용 관세율 (e.g., '0', '8')")
