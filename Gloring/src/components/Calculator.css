@@ -40,12 +40,12 @@ input {
   gap: 100px;
 }
 
-.calculator-header button {
+/* .calculator-header button {
   margin-top: 60px;
   height: 100%;
   margin-left: 10px;
   width: 30%;
-}
+} */
 
 .calculator-title {
   text-align: center;
@@ -61,7 +61,19 @@ input {
   margin-bottom: 2rem;
 }
 
+.turn-won {
+  flex-direction: row;
+  justify-content: center;
+}
 
+.won {
+  width: 223px;
+}
+
+.country-money {
+  width: 143px;
+  margin-right: 20px;
+}
 
 .button-right {
   position: absolute;
@@ -306,6 +318,24 @@ input {
   margin-top: 1rem;
 }
 
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+.result-table th,
+.result-table td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.result-table th {
+  background-color: #f0f0f0;
+}
+
 .summary-box {
   flex: 1;
   display: flex;
@@ -351,6 +381,11 @@ input {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+
+  margin-top: 60px;
+  height: 100%;
+  margin-left: 10px;
+  width: 30%;
 }
 
 .submit-button:hover {

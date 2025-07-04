@@ -13,7 +13,7 @@ const Header = () => {
   Gloring
 </h1>
         <nav className='nav'>
-          <a href='#calculator' className='nav-btn'>손익 계산 시뮬레이터</a>
+          <a href='#calculator' className='nav-btn'>순이익 계산 시뮬레이터</a>
           <a href='#trend'className='nav-btn'>트렌드 인사이트</a>
         </nav>
         <nav className='right'>

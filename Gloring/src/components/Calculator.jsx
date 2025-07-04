@@ -5,13 +5,31 @@ import CalculatorLogic from "./CalculatorLogic";
 import Modal from "./Modal";
 import axios from 'axios';
 
+  const countryMap = {
+    'CN':'元',
+    'US':'$',
+    'JP':'¥',
+    'SA':'﷼',
+    'VN':'₫',
+    'AU':'A$($)',
+    'TW':'NT$',
+    'RU':'₽',
+    'QA':'ر.ق',
+    'KW':'د.ك',
+    'MY':'RM',
+    'AE':'د.إ',
+    'ID':'Rp'
+  };
+
 export default function Calculator() {
 
   const [name, setName] = useState("");
   const [origin, setOrigin] = useState("");
   const [hsCode, setHsCode] = useState();
-  const [exchangeRate, setExchangeRate] = useState("");
+  const [exchangeRate, setExchangeRate] = useState('CN');
+  const [countryUnit, setCountryUnit] = useState(countryMap['CN']);
   const [exRate, setExRate] = useState();
+  const [money, setMoney] = useState();
   const [purchase, setPurchase] = useState();
   const [displayPurchase, setDisplayPurchase] = useState();
   const [transport, setTransport] = useState();
@@ -58,6 +76,15 @@ export default function Calculator() {
 
   const [selectedCode, setSelectedCode] = useState(null);
 
+
+  const CountryChange = (e) => {
+    const newCountryCode = e.target.value;
+    setExchangeRate(newCountryCode);
+    const newCurrencyUnit = countryMap[newCountryCode] || ''; // 매핑에 없는 경우 기본값
+    setCountryUnit(newCurrencyUnit);
+  }
+
+
   const formatNumber = (num) => {
     if (num === undefined || num === null || num === '') return '';
     const number = typeof num === 'string' ? parseInt(num.replace(/,/g, ''), 10) : num;
@@ -100,38 +127,121 @@ export default function Calculator() {
       setDisplayPlatFormFee(value);
     }
   }
+
+  const hsCodeSearch = async (e) => {
+    e.preventDefault();
+    if (!name || name.trim() === "") {
+      alert("품목명을 입력해주세요!")
+      return;
+    }
+    setHsModalOpen(true);
+    try {
+      const response = await axios.post("http://localhost:8000/ai/getHscode",{
+        item: name,
+      });
+      
+      const result = response.data;
+      setHsData(result);
+      console.log("HS코드 응답(JSON):", JSON.stringify(result, null, 2));
+      console.log("HS코드 응답: ", result);
+      console.table(response.data);
+      // 여기에 HS 코드 결과를 모달에 표시하거나 처리하는 로직 작성
+    } catch (error) {
+      console.error("HS코드 조회 실패: ", error);
+      alert("서버 오류: HS 코드 조회에 실패했습니다!");
+    }
+  };
+
+  const checkFtaStatus = async () => {
+      if (!hsCode || typeof hsCode !== 'string' || hsCode.trim() === "") {
+        alert("HS 코드를 입력하거나 선택해주세요.");
+        return;
+    }
+    if (!origin || typeof origin !== 'string' || origin.trim() === "") {
+      alert("원산지를 입력해주세요.");
+      return;
+    }
+
+    console.log("FTA 요청 전송:", {
+    hsCode,
+    origin,
+    });
+
+    const origin_country = countryMap[origin] || origin;
+
+    try {
+    // API 요청 보내기 (예시 URL 및 파라미터)
+    const response = await axios.post("http://localhost:8000/ai/getFta", {
+      hscode: hsCode,
+      origin_country: origin_country,
+    });
+
+    // API 응답 결과에 따라 메시지 처리
+    const data = response.data;
+    if (data.isFtaApplicable) {
+      alert("FTA 적용 가능합니다!");
+      setFta("FTA 적용 가능합니다!"); // fta 상태 업데이트도 가능
+    } else {
+      alert("FTA 적용이 불가능합니다!");
+      setFta("FTA 적용이 불가능합니다!");
+    }
+    } catch (error) {
+      console.error("FTA 조회 실패:", error);
+
+      alert("FTA 조회 중 오류가 발생했습니다.");
+      }
+    };
+  
+  
+  const handleCountryChange = async (e) => {
+    const selected = e.target.value;
+    setExchangeRate(selected);
+    setCountryUnit(countryMap[selected]);
+
+    try {
+      const response = await axios.get(`/api/exchange-rates/EU=${selectedCode}`);
+      setExchangeRate(response.data.rate);  // 응답 구조에 맞게 조정
+    } catch (error) {
+      console.error("환율 조회 실패", error);
+    }
+  };
+
   
   const submit = (e) => {
         e.preventDefault();
-        alert("저장되었습니다!");
+        const now = new Date().toLocaleDateString(); //클릭 시점의 날짜
 
-        // axios를 통해서 post방식으로 정보를 전달
-        
-        // const res = await axios.post(URL, {
-        //     money,
-        //     purchase,
-        //     exchangeRate,
-        //     transportCost,
-        //     otherCost,
-        //     origin,
-        //     tariff,
-        //     vat,
-        //     totalPurchase
-        // })
+        const newEntry = {
+          date: now,
+          name,
+          purchase, 
+          sales,
+          benefit,
+          benefitPer
+        };
+      
+        setHistory(prev => [...prev, newEntry]); // 이전 내역 + 새 내역 추가
+        alert("저장되었습니다!");
     }
+
 
     const [hsModalOpen, setHsModalOpen] = useState(false);
     const [sumModalOpen, setSumModalOpen] = useState(false);
+    const [history, setHistory] = useState([]);
 
     useEffect(()=> {
-      if (hsModalOpen , sumModalOpen) {
+      
+      if (hsModalOpen || sumModalOpen) {
         document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
       }else {
         document.body.style.overflow = "auto";
+        document.documentElement.style.overflow = "auto";
       }
 
       return () => {
         document.body.style.overflow = "auto";
+        document.documentElement.style.overflow = "auto";
       };
     }, [hsModalOpen, sumModalOpen]);
 
@@ -141,6 +251,17 @@ export default function Calculator() {
     //   .catch(err => alert('검색 오류'));
     // });
 
+    const loadCalculation = (data) => {
+      setName(data.name);
+      setPurchase(data.purchase);
+      setDisplayPurchase(data.purchase.toLocaleString());
+      setSales(data.sales);
+      setDisplaySales(data.sales.toLocaleString());
+      setBenefit(data.benefit);
+      setBenefitPer(data.benefitPer);
+      setSumModalOpen(false);
+    }
+
   return (
     <section className="calculator">
       <div className="calculator-header">
@@ -148,21 +269,40 @@ export default function Calculator() {
           <h2 className="calculator-title">순이익 계산 시뮬레이터</h2>
           <p className="calculator-desc">AI로 HS코드를 추천 받고 편하게 계산해보세요.</p>
         </div>
-        <div className="button-right">
-      </div>
         <button type="button" className="submit-button"
-        onClick={(e) => {
-          e.preventDefault();
-          setSumModalOpen(true);
-          }}>계산 내역 확인</button>
+        onClick={(e) => { e.preventDefault();
+        setSumModalOpen(true);
+        }}>계산 이력 확인</button>
         <Modal isOpen={sumModalOpen} onClose={()=>setSumModalOpen(false)}>
               <h2>계산 내역</h2>
               <hr/>
-              <table>
-                
+              <table className="result-table">
+              <thead>
+                <tr>
+                  <th>계산 일자</th>
+                  <th>상품명</th>
+                  <th>매입액</th>
+                  <th>매출액</th>
+                  <th>순이익</th>
+                  <th>매입 비용 대비 이익률</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((item,idx)=>(
+                <tr onClick={()=>loadCalculation(item)} tr key={idx}>
+                  {/* <td>{new Date().toLocaleDateString()}</td> */}
+                  <td>{item.date}</td>
+                  <td>{item.name}</td>
+                  <td>{formatWon(item.purchase)}</td>
+                  <td>{formatWon(item.sales)}</td>
+                  <td>{formatWon(item.benefit)}</td>
+                  <td>{formatPercent(item.benefitPer)}</td>
+                </tr>
+                ))}
+              </tbody>
               </table>
         </Modal>
-        </div>
+      </div>
       <hr/>
       <form className="calculator-form" onSubmit={submit}
       onKeyDown={(e) => {
@@ -174,14 +314,7 @@ export default function Calculator() {
             <button
             className="btn-hs"
             type="button"
-            onClick={(e) => {
-            e.preventDefault();
-              if (!name || name.trim() === "") {
-                alert("품목명을 입력해주세요!");
-                return;
-              }
-              setHsModalOpen(true);
-            }}>HS 코드 조회</button>
+            onClick={hsCodeSearch}>HS 코드 조회</button>
             <Modal isOpen={hsModalOpen} onClose={()=>setHsModalOpen(false)}>
               <h2>AI로 HS코드 추천 받기</h2>
               <hr/>
@@ -193,62 +326,32 @@ export default function Calculator() {
                 <hr/>
                 <span className="list">아래 내용 중 품목에 맞는 항목을 선택하세요.</span>
                 <ul className="search-text">
-                    <li>
+                  {hsData.map((item, idx) => (
+                    <li key={idx}
+                    onClick={()=>{
+                    console.log(item.hscode);
+                    setHsCode(item.hscode);
+                    setHsModalOpen(false);}}>
                       <div className="content">
-                      <span className="code">0000</span>{'\u2003'}
-                      <span className="itemName">팔찌</span>
+                      <span className="code">{item.hscode}</span>{'\u2003'}
+                      <span className="itemName">{item.item}</span>
                       </div>
                     </li>
-                    <li>
-                      <div className="content">
-                      <span className="code">0001</span>{'\u2003'}
-                      <span className="itemName">목걸이</span>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="content">
-                      <span className="code">0001</span>{'\u2003'}
-                      <span className="itemName">목걸이</span>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="content">
-                      <span className="code">0001</span>{'\u2003'}
-                      <span className="itemName">목걸이</span>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="content">
-                      <span className="code">0001</span>{'\u2003'}
-                      <span className="itemName">목걸이</span>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="content">
-                      <span className="code">0001</span>{'\u2003'}
-                      <span className="itemName">목걸이</span>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="content">
-                      <span className="code">0001</span>{'\u2003'}
-                      <span className="itemName">목걸이</span>
-                      </div>
-                    </li>
+                  ))}
                 </ul>
             </Modal>
             <label>원산지 {'>'}</label>
             <input type="text" placeholder="구매 사이트 상세페이지 참조"
             value={origin} onChange={(e)=>setOrigin(e.target.value)}></input>
-            <button className="btn-ai" type="button">FTA 여부 조회</button>
+            <button className="btn-ai" type="button" onClick={checkFtaStatus}>FTA 여부 조회</button>
           </div>
     <div className="cal-text">
       <div className="calculator-purchase">
         <div className="cal-data">
             <div className="calculator-group">
               <label>HS 코드</label>
-              <input type="number" placeholder="예) 0000.00"
-              value={hsCode} onChange={(e)=>setHsCode(e.target.value)}/>
+              <input type="text" placeholder="예) 0000.00.0000"
+              value={hsCode || ""} onChange={(e)=>setHsCode(e.target.value)}/>
             </div>
             <div className="calculator-group">
               <label>관세청 고시환율</label>
@@ -269,15 +372,17 @@ export default function Calculator() {
                 <option value="ID">인도네시아</option>
               </select>
               <input type="number" placeholder="0%" className="exchange-rate"
-              value={formatPercent(exRate)} onChange={(e)=>setExRate(e.target.value)}/>
+              value={formatPercent(exRate)} onChange={(e)=>setExRate(e.target.value)} readOnly/>
             </div>
           </div>
 
           <div className="calculator-group">
             <label>매입액</label>
-            <input type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
-            value={formatWon(displayPurchase)} onChange={handleChange(setPurchase, setDisplayPurchase)}/>
+            <div className="turn-won">
+            <input type="text" placeholder={countryUnit} pattern="[0-9]*" className="country-money"/>
+            <input type="text" placeholder="0원" pattern="[0-9]*" className="won"
+            value={formatWon(displayPurchase)} onChange={handleChange(setPurchase, setDisplayPurchase)} readOnly/>
+            </div>
           </div>
 
           <div className="calculator-group">
@@ -483,23 +588,25 @@ export default function Calculator() {
           subFee={subFee}
           cost={cost}
           totalFee={totalFee}
-          onResultChange={({
-            tariffAmount,
-            baseCost,
-            vatAmount,
-            totalPurchaseCost,
-            totalSales,
-            fee,
-            benefit,
-            margin
-          }) => {
+          onResultChange={(result) => {
+            const {
+              tariffAmount = 0,
+              baseCost = 0,
+              vatAmount = 0,
+              totalPurchaseCost = 0,
+              totalSales = 0,
+              fee = 0,
+              benefit = 0,
+              margin = 0
+            } = result;
+
             setTariffAmount(tariffAmount);
             setBaseCost(baseCost);
             setVatAmount(vatAmount);
             setTotalPurchase(totalPurchaseCost);
-            setDisplayTotalPurchase(totalPurchaseCost.toLocaleString());  // ★ 표시용 상태 업데이트 추가
+            setDisplayTotalPurchase(totalPurchaseCost.toLocaleString());
             setTotalSales(totalSales);
-            setDisplayTotalSales(totalSales);
+            setDisplayTotalSales(totalSales.toLocaleString());
             setFee(fee);
             setBenefit(benefit);
             setBenefitPer(margin);
