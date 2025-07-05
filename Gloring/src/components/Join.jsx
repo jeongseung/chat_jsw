@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import "./Join.css";
 
 const Join = () => {
+  const [cookies, setCookie] = useCookies(['user']);
   const navigate = useNavigate();
 
   // 입력 상태 관리
@@ -15,7 +17,7 @@ const Join = () => {
   // 이메일 중복체크 관련 상태
   const [emailCheckMessage, setEmailCheckMessage] = useState('');
   const [isEmailChecked, setIsEmailChecked] = useState(false);
-
+  
   // 이메일 도메인 선택/직접입력 핸들러
   const DomainChange = (e) => {
     const value = e.target.value;
@@ -65,6 +67,15 @@ const Join = () => {
       setEmailCheckMessage('이메일 중복체크를 해주세요.');
       return;
     }
+
+    const userData = {
+      name: name,
+      pw: password,
+      emailId: emailId,
+      email: emailDomain
+    };
+
+    setCookie('user', JSON.stringify(userData), { path: '/', maxAge: 86400 });
     // 실제 회원가입 로직 (API 호출 등) 추가
     console.log("회원가입 정보:", {
       name,

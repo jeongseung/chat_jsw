@@ -21,12 +21,12 @@ import axios from 'axios';
     'ID':'Rp'
   };
 
-export default function Calculator() {
+export default function Calculator({isLoggedIn, setIsLoggedIn}) {
 
   const [name, setName] = useState("");
   const [origin, setOrigin] = useState("");
   const [hsCode, setHsCode] = useState();
-  const [exchangeRate, setExchangeRate] = useState('CN');
+  const [selectedCountryCode, setSelectedCountryCode] = useState('CN');
   const [countryUnit, setCountryUnit] = useState(countryMap['CN']);
   const [exRate, setExRate] = useState();
   const [foreignPurchase, setForeignPurchase] = useState("");
@@ -76,25 +76,92 @@ export default function Calculator() {
 
   const [selectedCode, setSelectedCode] = useState(null);
 
-  const inputRef = useRef(null);
-
+  const purchaseRef = useRef(null);
+  const transportRef = useRef(null);
+  const etcCostRef = useRef(null);
+  const salesRef = useRef(null);
+  const transportCostRef = useRef(null);
+  const adCostRef = useRef(null);
+  const platformRef = useRef(null);
+  const etcFeeRef = useRef(null);
+  const subCostRef = useRef(null);
   
   useEffect(() => {
     // 커서를 접미사 앞 위치로 설정
-    const el = inputRef.current;
+    const el = purchaseRef.current;
+    if (el) {
+      const pos = formatWon(foreignPurchase).length - 1;
+      el.setSelectionRange(pos, pos);
+    }
+  }, [foreignPurchase]);
+
+  useEffect(() => {
+    const el = transportRef.current;
     if (el) {
       const pos = formatWon(displayTransport).length - 1;
       el.setSelectionRange(pos, pos);
     }
   }, [displayTransport]);
+  
+  useEffect(() => {
+    const el = etcCostRef.current;
+    if (el) {
+      const pos = formatWon(displaySubCost).length - 1;
+      el.setSelectionRange(pos, pos);
+    }
+  }, [displaySubCost]);
 
+  useEffect(() => {
+    const el = salesRef.current;
+    if (el) {
+      const pos = formatWon(displaySales).length - 1;
+      el.setSelectionRange(pos, pos);
+    }
+  }, [displaySales]);
 
-  const CountryChange = (e) => {
-    const newCountryCode = e.target.value;
-    setExchangeRate(newCountryCode);
-    const newCurrencyUnit = countryMap[newCountryCode] || ''; // 매핑에 없는 경우 기본값
-    setCountryUnit(newCurrencyUnit);
-  }
+  useEffect(() => {
+    const el = transportCostRef.current;
+    if (el) {
+      const pos = formatWon(displayTransportCost).length - 1;
+      el.setSelectionRange(pos, pos);
+    }
+  }, [displayTransportCost]);
+
+  useEffect(() => {
+    const el = adCostRef.current;
+    if (el) {
+      const pos = formatWon(displayAdCost).length - 1;
+      el.setSelectionRange(pos, pos);
+    }
+  }, [displayAdCost]);
+
+  useEffect(() => {
+    const el = platformRef.current;
+    if (el) {
+      const pos = formatWon(displayPlatFormFee).length - 1;
+      el.setSelectionRange(pos, pos);
+    }
+  }, [displayPlatFormFee]);
+
+  useEffect(() => {
+    const el = etcFeeRef.current;
+    if (el) {
+      const pos = formatWon(displaySubFee).length - 1;
+      el.setSelectionRange(pos, pos);
+    }
+  }, [displaySubFee]);
+
+  useEffect(() => {
+    const el = subCostRef.current;
+    if (el) {
+      const pos = formatWon(displayCost).length - 1;
+      el.setSelectionRange(pos, pos);
+    }
+  }, [displayCost]);
+
+  // useEffect(() => {
+  //   setExRate(exRate);
+  // });
 
 
   const formatNumber = (num) => {
@@ -174,28 +241,32 @@ export default function Calculator() {
       return;
     }
 
-    console.log("FTA 요청 전송:", {
-    hsCode,
-    origin,
-    });
+    console.log("FTA 요청 전송:", {hsCode, origin});
 
     const origin_country = countryMap[origin] || origin;
 
     try {
-    // API 요청 보내기 (예시 URL 및 파라미터)
     const response = await axios.post("http://localhost:8000/ai/getFta", {
       hscode: hsCode,
       origin_country: origin_country,
     });
 
-    // API 응답 결과에 따라 메시지 처리
     const data = response.data;
-    if (data.isFtaApplicable) {
+    if (data.fta_status) {
+      console.log(data);
       alert("FTA 적용 가능합니다!");
-      setFta("FTA 적용 가능합니다!"); // fta 상태 업데이트도 가능
+      setFta("FTA 적용 가능합니다!");
+      // 🔽 관세율 값 적용
+      if (data.tariff_rate !== undefined && data.tariff_rate !== null) {
+        const ratePercent = parseFloat(data.tariff_rate) * 100;
+        setTariff(ratePercent.toFixed(2)); // 예: 0 → 0.00%
+      } 
     } else {
       alert("FTA 적용이 불가능합니다!");
       setFta("FTA 적용이 불가능합니다!");
+      
+      // FTA 미적용 → 기본값 8% 설정
+      setTariff(8);
     }
     } catch (error) {
       console.error("FTA 조회 실패:", error);
@@ -207,11 +278,13 @@ export default function Calculator() {
   
   const handleCountryChange = async (e) => {
     const selected = e.target.value;
-    setExchangeRate(selected);
+    setSelectedCountryCode(selected);
     setCountryUnit(countryMap[selected]);
 
+    console.log("선택한 국가코드:", selected);
+
     try {
-      const response = await axios.get(`http://localhost:8000/exchange-rate/${selected}`);
+      const response = await axios.get(`http://localhost:8090/gloring/exchange-rates/${selected}`);
       console.log("환율 응답 데이터:", response.data);
       const rate = parseFloat(response.data.exchangeRate);
 
@@ -250,8 +323,12 @@ export default function Calculator() {
   
   const submit = (e) => {
         e.preventDefault();
+        
+        // if (!isLoggedIn) {
+        //   alert("로그인 후 이용 가능합니다.");
+        //   return;
+        // }
         const now = new Date().toLocaleDateString(); //클릭 시점의 날짜
-
         const newEntry = {
           date: now,
           name,
@@ -260,7 +337,7 @@ export default function Calculator() {
           benefit,
           benefitPer
         };
-      
+
         setHistory(prev => [...prev, newEntry]); // 이전 내역 + 새 내역 추가
         alert("저장되었습니다!");
     }
@@ -286,11 +363,6 @@ export default function Calculator() {
       };
     }, [hsModalOpen, sumModalOpen]);
 
-    // useEffect(()=> {
-    //   axios.post('/api/hsCode', {item:'name'})
-    //   .then(res => setHsData(res.data))
-    //   .catch(err => alert('검색 오류'));
-    // });
 
     const loadCalculation = (data) => {
       setName(data.name);
@@ -310,27 +382,30 @@ export default function Calculator() {
           <h2 className="calculator-title">순이익 계산 시뮬레이터</h2>
           <p className="calculator-desc">AI로 HS코드를 추천 받고 편하게 계산해보세요.</p>
         </div>
-        <button type="button" className="submit-button"
-        onClick={(e) => { e.preventDefault();
+        <button type="button" className="history-button" onClick={(e) => { e.preventDefault();
+        // if (!isLoggedIn) {
+        //   alert("로그인 후 이용 가능합니다.");
+        //   return;
+        // }
         setSumModalOpen(true);
         }}>계산 이력 확인</button>
         <Modal isOpen={sumModalOpen} onClose={()=>setSumModalOpen(false)}>
               <h2>계산 내역</h2>
               <hr/>
               <table className="result-table">
-              <thead>
-                <tr>
-                  <th>계산 일자</th>
-                  <th>상품명</th>
-                  <th>매입액</th>
-                  <th>매출액</th>
-                  <th>순이익</th>
-                  <th>매입 비용 대비 이익률</th>
-                </tr>
-              </thead>
-              <tbody>
+                <thead>
+                  <tr>
+                    <th>계산 일자</th>
+                    <th>상품명</th>
+                    <th>매입액</th>
+                    <th>매출액</th>
+                    <th>순이익</th>
+                    <th>매입 비용 대비 이익률</th>
+                  </tr>
+                </thead>
+                <tbody>
                 {history.map((item,idx)=>(
-                <tr onClick={()=>loadCalculation(item)} tr key={idx}>
+                <tr key={idx} onClick={() => loadCalculation(item)}>
                   {/* <td>{new Date().toLocaleDateString()}</td> */}
                   <td>{item.date}</td>
                   <td>{item.name}</td>
@@ -340,21 +415,18 @@ export default function Calculator() {
                   <td>{formatPercent(item.benefitPer)}</td>
                 </tr>
                 ))}
-              </tbody>
+                </tbody>
               </table>
         </Modal>
       </div>
       <hr/>
-      <form className="calculator-form" onSubmit={submit}
-      onKeyDown={(e) => {
+      <form className="calculator-form" action="gloring/cal" method="post" onSubmit={submit} onKeyDown={(e) => {
         if (e.key === "Enter") e.preventDefault();}}>
           <div className="calculator-basic">
             <label>품목명 {'>'}</label>
             <input type="text" className="hsCode" placeholder="상세하게 적어주세요. Ex) 가죽 재질의 팔찌"
             value={name} onChange={(e)=>setName(e.target.value)}></input>
-            <button
-            className="btn-hs"
-            type="button"
+            <button className="btn-hs" type="button"
             onClick={hsCodeSearch}>HS 코드 조회</button>
             <Modal isOpen={hsModalOpen} onClose={()=>setHsModalOpen(false)}>
               <h2>AI로 HS코드 추천 받기</h2>
@@ -397,21 +469,21 @@ export default function Calculator() {
             <div className="calculator-group">
               <label>관세청 고시환율</label>
               <div className="exchange">
-                <select className="exchange-rate" value={exchangeRate} onChange={handleCountryChange}>
-                <option value="CN">중국</option>
-                <option value="US">미국</option>
-                <option value="JP">일본</option>
-                <option value="SA">사우디</option>
-                <option value="VN">베트남</option>
-                <option value="AU">호주(오스트레일리아)</option>
-                <option value="TW">대만(타이완)</option>
-                <option value="RU">러시아</option>
-                <option value="QA">카타르</option>
-                <option value="KW">쿠웨이트</option>
-                <option value="MY">말레이시아</option>
-                <option value="AE">아랍에미리트</option>
-                <option value="ID">인도네시아</option>
-              </select>
+                <select className="exchange-rate" value={selectedCountryCode} onChange={handleCountryChange}>
+                  <option value="CN">중국</option>
+                  <option value="US">미국</option>
+                  <option value="JP">일본</option>
+                  <option value="SA">사우디</option>
+                  <option value="VN">베트남</option>
+                  <option value="AU">호주(오스트레일리아)</option>
+                  <option value="TW">대만(타이완)</option>
+                  <option value="RU">러시아</option>
+                  <option value="QA">카타르</option>
+                  <option value="KW">쿠웨이트</option>
+                  <option value="MY">말레이시아</option>
+                  <option value="AE">아랍에미리트</option>
+                  <option value="ID">인도네시아</option>
+                </select>
               <input type="text" className="exchange-rate" value={exRate || ""} readOnly />
             </div>
           </div>
@@ -419,18 +491,12 @@ export default function Calculator() {
           <div className="calculator-group">
             <label>매입액</label>
             <div className="turn-won">
-              <input type="text" placeholder={countryUnit} pattern="[0-9]*" className="country-money"
-              value={foreignPurchase} onChange={handleForeignPurchaseChange}
-              onClick={() => {const el = inputRef.current;
-              if (el) {
-            const pos = formatWon(displayTransport).length - 1;
-            el.setSelectionRange(pos, pos);
-              }
-            }}
+              <input ref={purchaseRef} type="text" placeholder={countryUnit} className="country-money"
+              value={foreignPurchase ? parseInt(foreignPurchase).toLocaleString() : ''} onChange={handleForeignPurchaseChange}
             onFocus={() => {
-            const el = inputRef.current;
+            const el = purchaseRef.current;
               if (el) {
-            const pos = formatWon(displayTransport).length - 1;
+            const pos = formatWon(foreignPurchase).length - 1;
             el.setSelectionRange(pos, pos);
               }
             }}/>
@@ -441,16 +507,16 @@ export default function Calculator() {
 
           <div className="calculator-group">
             <label>운임비</label>
-            <input ref={inputRef} type="text" placeholder="0원"
+            <input ref={transportRef} type="text" placeholder="0원"
             value={formatWon(displayTransport)} onChange={handleChange(setTransport, setDisplayTransport)}
-            onClick={() => {const el = inputRef.current;
+            onClick={() => {const el = transportRef.current;
               if (el) {
             const pos = formatWon(displayTransport).length - 1;
             el.setSelectionRange(pos, pos);
             }
           }}
             onFocus={() => {
-            const el = inputRef.current;
+            const el = transportRef.current;
               if (el) {
             const pos = formatWon(displayTransport).length - 1;
             el.setSelectionRange(pos, pos);
@@ -460,8 +526,21 @@ export default function Calculator() {
 
           <div className="calculator-group">
             <label>매입 시 발생한 기타 비용</label>
-            <input type="text" placeholder="0원"
-            value={formatWon(displaySubCost)} onChange={handleChange(setSubCost, setDisplaySubCost)}/>
+            <input ref={etcCostRef} type="text" placeholder="0원"
+            value={formatWon(displaySubCost)} onChange={handleChange(setSubCost, setDisplaySubCost)}
+            onClick={() => {const el = etcCostRef.current;
+              if (el) {
+            const pos = formatWon(displaySubCost).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}
+            onFocus={() => {
+            const el = etcCostRef.current;
+              if (el) {
+            const pos = formatWon(displaySubCost).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}/>
           </div>
 
           <div className="calculator-group-non-text">
@@ -504,7 +583,7 @@ export default function Calculator() {
             </div>
 
           <div className="total">
-            <label>매입 시 발생한 비용</label>
+            <label>총 매입 원가</label>
             <input type="text" placeholder="0원"
             value={formatWon(displayTotalPurchase)} onChange={handleChange(setTotalPurchase, setDisplayTotalPurchase)}
             onFocus={(e)=>e.target.blur()}/>
@@ -517,9 +596,22 @@ export default function Calculator() {
         <div className="cal-data">
           <div className="calculator-group">
             <label>예상 판매가</label>
-            <input type="text" placeholder="0원"
+            <input ref={salesRef} type="text" placeholder="0원"
             inputMode="numeric" pattern="[0-9]*"
-            value={formatWon(displaySales)} onChange={handleChange(setSales, setDisplaySales)}/>
+            value={formatWon(displaySales)} onChange={handleChange(setSales, setDisplaySales)}
+            onClick={() => {const el = salesRef.current;
+              if (el) {
+            const pos = formatWon(displaySales).length - 1;
+            el.setSelectionRange(pos, pos);
+              }
+            }}
+            onFocus={() => {
+            const el = salesRef.current;
+              if (el) {
+            const pos = formatWon(displaySales).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}/>
           </div>
 
           <div className="calculator-group">
@@ -533,16 +625,42 @@ export default function Calculator() {
               </span>
               </div>
             </div>
-            <input type="text" placeholder="0원"
+            <input ref={transportCostRef} type="text" placeholder="0원"
             inputMode="numeric" pattern="[0-9]*"
-            value={formatWon(displayTransportCost)} onChange={handleChange(setTransportCost, setDisplayTransportCost)}/>
+            value={formatWon(displayTransportCost)} onChange={handleChange(setTransportCost, setDisplayTransportCost)}
+            onClick={() => {const el = transportCostRef.current;
+              if (el) {
+            const pos = formatWon(displayTransportCost).length - 1;
+            el.setSelectionRange(pos, pos);
+              }
+            }}
+            onFocus={() => {
+            const el = transportCostRef.current;
+              if (el) {
+            const pos = formatWon(displayTransportCost).length - 1;
+            el.setSelectionRange(pos, pos);
+              }
+            }}/>
           </div>
 
           <div className="calculator-group">
             <label>광고비</label>
-            <input type="text" placeholder="0원"
+            <input ref={adCostRef} type="text" placeholder="0원"
             inputMode="numeric" pattern="[0-9]*"
-            value={formatWon(displayAdCost)} onChange={handleChange(setAdCost, setDisplayAdCost)}/>
+            value={formatWon(displayAdCost)} onChange={handleChange(setAdCost, setDisplayAdCost)}
+            onClick={() => {const el = adCostRef.current;
+              if (el) {
+            const pos = formatWon(displayAdCost).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}
+            onFocus={() => {
+            const el = adCostRef.current;
+              if (el) {
+            const pos = formatWon(displayAdCost).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}/>
           </div>
 
           <div className="calculator-group">
@@ -569,16 +687,42 @@ export default function Calculator() {
                     <option value='7'>쿠팡</option>
                     <option value='10'>11번가</option>
                   </select>
-              <input type="text" placeholder="0%" className="fee"
+              <input ref={platformRef} type="text" placeholder="0%" className="fee"
               inputMode="numeric" pattern="[0-9]*"
-              value={formatPercent(displayPlatFormFee)} onChange={handleChange(setPlatFormFee, setDisplayPlatFormFee)}></input>
+              value={formatPercent(displayPlatFormFee)} onChange={handleChange(setPlatFormFee, setDisplayPlatFormFee)}
+              onClick={() => {const el = platformRef.current;
+              if (el) {
+            const pos = formatWon(displayPlatFormFee).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}
+            onFocus={() => {
+            const el = platformRef.current;
+              if (el) {
+            const pos = formatWon(displayPlatFormFee).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}></input>
                 </div>
               </li>
               <li>
                 <label>기타 수수료</label>
-                <input type="text" placeholder="0원" className="ect-fee"
+                <input ref={etcFeeRef} type="text" placeholder="0원" className="ect-fee"
                 inputMode="numeric" pattern="[0-9]*"
-                value={formatWon(displaySubFee)} onChange={handleChange(setSubFee, setDisplaySubFee)}></input>
+                value={formatWon(displaySubFee)} onChange={handleChange(setSubFee, setDisplaySubFee)}
+                onClick={() => {const el = etcFeeRef.current;
+              if (el) {
+            const pos = formatWon(displaySubFee).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}
+            onFocus={() => {
+            const el = etcFeeRef.current;
+              if (el) {
+            const pos = formatWon(displaySubFee).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}></input>
               </li>
               <li>
                 <label>총 수수료</label>
@@ -590,9 +734,22 @@ export default function Calculator() {
             </ul>
             <div className="etc-group">
             <label>매출 시 발생 할 기타 비용</label>
-            <input type="text" placeholder="0원"
+            <input ref={subCostRef} type="text" placeholder="0원"
             inputMode="numeric" pattern="[0-9]*"
-            value={displayCost} onChange={handleChange(setCost, setDisplayCost)}/>
+            value={formatWon(displayCost)} onChange={handleChange(setCost, setDisplayCost)}
+            onClick={() => {const el = subCostRef.current;
+              if (el) {
+            const pos = formatWon(displayCost).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}
+            onFocus={() => {
+            const el = subCostRef.current;
+              if (el) {
+            const pos = formatWon(displayCost).length - 1;
+            el.setSelectionRange(pos, pos);
+            }
+          }}/>
             </div>
             <div className="total">
               <label className="label-sales">매출 시 발생 할 수익</label>
@@ -610,7 +767,7 @@ export default function Calculator() {
               <label>순이익</label>
               <div className="tooltip">
                 <div className="tooltip-circle">?</div>
-                <span className="tooltip-text"> 순이익 = 매입 시 발생한 비용 - 매출 시 발생할 수익
+                <span className="tooltip-text"> 순이익 = 총 매입 원가 - 매출 시 발생할 수익
                 </span>
                 </div>
               </div>
@@ -621,11 +778,10 @@ export default function Calculator() {
           </div>
           <div className="summary-box">
             <div className="tooltip-label">
-              <label>매입 비용 대비 수익률</label>
+              <label>이익률</label>
               <div className="tooltip">
                 <div className="tooltip-circle">?</div>
-                <span className="tooltip-text"> 매입 비용 대비 이익률
-                  <br/> = (순이익 / 매입 시 발생한 비용) * 100
+                <span className="tooltip-text"> 이익률 = (순이익 / 총 매입 원가) X 100
                 </span>
                 </div>
               </div>
@@ -636,7 +792,7 @@ export default function Calculator() {
           </div>
         </div>
         <div className="calculator-actions">
-          <button type="submit" className="submit-button">저장하기</button>
+          <button type="submit" onSubmit={submit} className="submit-button">저장하기</button>
 
         </div>
           <CalculatorLogic

@@ -381,7 +381,20 @@ input {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  margin-top: 60px;
+  height: 100%;
+  margin-left: 10px;
+  width: 30%;
+}
 
+.history-button {
+  background-color: white;
+  color: #047857;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  border: 2px solid #047857;
+  border-radius: 8px;
+  cursor: pointer;
   margin-top: 60px;
   height: 100%;
   margin-left: 10px;
@@ -390,6 +403,11 @@ input {
 
 .submit-button:hover {
   background-color: #047857;
+}
+
+.history-button:hover {
+  background-color: #047857;
+  color: white;
 }
 
 .tooltip {
