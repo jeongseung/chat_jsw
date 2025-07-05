@@ -72,7 +72,7 @@ public class SecurityConfig {
                 // HTTP 요청에 대한 접근 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         // "/api/auth/**" 경로는 모두 허용
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 );
                 // h2-console을 위한 헤더 설정

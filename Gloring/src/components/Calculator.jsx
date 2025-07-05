@@ -420,7 +420,20 @@ export default function Calculator() {
             <label>매입액</label>
             <div className="turn-won">
               <input type="text" placeholder={countryUnit} pattern="[0-9]*" className="country-money"
-              value={foreignPurchase} onChange={handleForeignPurchaseChange} />
+              value={foreignPurchase} onChange={handleForeignPurchaseChange}
+              onClick={() => {const el = inputRef.current;
+              if (el) {
+            const pos = formatWon(displayTransport).length - 1;
+            el.setSelectionRange(pos, pos);
+              }
+            }}
+            onFocus={() => {
+            const el = inputRef.current;
+              if (el) {
+            const pos = formatWon(displayTransport).length - 1;
+            el.setSelectionRange(pos, pos);
+              }
+            }}/>
               <input type="text" placeholder="0원" pattern="[0-9]*" className="won"
               value={formatWon(displayPurchase)} readOnly/>
             </div>
