@@ -27,22 +27,14 @@ const CalculatorSection = () => {
     className={`gloring-button${isOpen ? '' : ' hide'}`}
     onClick={() => setIsOpen(false)}
   >
-<<<<<<< HEAD
-    손익계산기 닫기
-=======
     순이익 계산기 닫기
->>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
   </button>
 ) : (
   <button
     className={`gloring-button${!isOpen ? '' : ' hide'}`}
     onClick={() => setIsOpen(true)}
   >
-<<<<<<< HEAD
-    손익계산기 열기
-=======
     순이익 계산기 열기
->>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
   </button>
 )}
                 </div>

@@ -40,20 +40,12 @@ input {
   gap: 100px;
 }
 
-<<<<<<< HEAD
-.calculator-header button {
-=======
 /* .calculator-header button {
->>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
   margin-top: 60px;
   height: 100%;
   margin-left: 10px;
   width: 30%;
-<<<<<<< HEAD
-}
-=======
 } */
->>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 
 .calculator-title {
   text-align: center;
@@ -69,9 +61,6 @@ input {
   margin-bottom: 2rem;
 }
 
-<<<<<<< HEAD
-
-=======
 .turn-won {
   flex-direction: row;
   justify-content: center;
@@ -85,7 +74,6 @@ input {
   width: 143px;
   margin-right: 20px;
 }
->>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 
 .button-right {
   position: absolute;
