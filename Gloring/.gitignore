@@ -23,4 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-.env
+# <<<<<<< HEAD
+# .env
+# C:\Users\smhrd\Desktop\핵심프로젝트\backend\.env
+# =======
+# .env
+# >>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba

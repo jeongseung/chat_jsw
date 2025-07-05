@@ -48,7 +48,6 @@ export default function TrendRanking() {
                     ))}
                 </div>
             </div>
-
             <div className="trend-wrapper">
                 <button className="slide-arrow" onClick={handlePrev} disabled={currentIndex === 0}>◀</button>
 
