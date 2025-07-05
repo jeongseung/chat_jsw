@@ -29,4 +29,8 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+<<<<<<< HEAD
+=======
+  z-index: 10;
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 }

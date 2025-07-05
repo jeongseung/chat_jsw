@@ -7,10 +7,13 @@
   transform: translate3d(0, 0, 0);
 }
 
+<<<<<<< HEAD
 .box img {
   width: 100%;
 }
 
+=======
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 .wave {
   opacity: .4;
   position: absolute;

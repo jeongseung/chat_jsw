@@ -48,7 +48,11 @@ export default function TrendRanking() {
                     ))}
                 </div>
             </div>
+<<<<<<< HEAD
                 <br></br>
+=======
+
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
             <div className="trend-wrapper">
                 <button className="slide-arrow" onClick={handlePrev} disabled={currentIndex === 0}>◀</button>
 
@@ -68,7 +72,10 @@ export default function TrendRanking() {
 
                 <button className="slide-arrow" onClick={handleNext} disabled={currentIndex === rankings.length - 1}>▶</button>
             </div>
+<<<<<<< HEAD
             <br></br>
+=======
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
             <hr></hr>
         </div>
     );

@@ -40,12 +40,20 @@ input {
   gap: 100px;
 }
 
+<<<<<<< HEAD
 .calculator-header button {
+=======
+/* .calculator-header button {
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
   margin-top: 60px;
   height: 100%;
   margin-left: 10px;
   width: 30%;
+<<<<<<< HEAD
 }
+=======
+} */
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 
 .calculator-title {
   text-align: center;
@@ -61,7 +69,23 @@ input {
   margin-bottom: 2rem;
 }
 
+<<<<<<< HEAD
 
+=======
+.turn-won {
+  flex-direction: row;
+  justify-content: center;
+}
+
+.won {
+  width: 223px;
+}
+
+.country-money {
+  width: 143px;
+  margin-right: 20px;
+}
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 
 .button-right {
   position: absolute;
@@ -306,6 +330,27 @@ input {
   margin-top: 1rem;
 }
 
+<<<<<<< HEAD
+=======
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+.result-table th,
+.result-table td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.result-table th {
+  background-color: #f0f0f0;
+}
+
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 .summary-box {
   flex: 1;
   display: flex;
@@ -351,6 +396,14 @@ input {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+<<<<<<< HEAD
+=======
+
+  margin-top: 60px;
+  height: 100%;
+  margin-left: 10px;
+  width: 30%;
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 }
 
 .submit-button:hover {

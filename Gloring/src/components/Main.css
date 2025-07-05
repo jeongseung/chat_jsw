@@ -8,12 +8,19 @@
 }
 
 .main-content h2 {
+<<<<<<< HEAD
   font-size: 2.5rem;
+=======
+  font-size: 2rem;
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
   font-weight: bold;
 }
 
 .main-content p {
+<<<<<<< HEAD
   font-size: 1.5rem;
+=======
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
   margin-bottom: 2rem;
   color: #555;
 }
@@ -49,7 +56,11 @@
 }
 
 .gloring-text h2 {
+<<<<<<< HEAD
   font-size: 2rem;
+=======
+  font-size: 1.5rem;
+>>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
   font-weight: bold;
 }
 
