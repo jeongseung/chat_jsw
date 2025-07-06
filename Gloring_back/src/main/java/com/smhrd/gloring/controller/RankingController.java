@@ -3,10 +3,7 @@ package com.smhrd.gloring.controller;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
-<<<<<<< HEAD
 import org.springframework.web.bind.annotation.CrossOrigin;
-=======
->>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,10 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/rankings")
 @RequiredArgsConstructor
-<<<<<<< HEAD
 @CrossOrigin("http://localhost:5173")
-=======
->>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
 public class RankingController {
 
     private final RankingService rankingService;
