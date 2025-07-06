@@ -76,7 +76,7 @@ public class SecurityConfig {
                 // HTTP 요청에 대한 접근 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         // "/api/auth/**" 경로는 모두 허용
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // OAuth2 로그인 설정 추가

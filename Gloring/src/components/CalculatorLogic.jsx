@@ -8,8 +8,8 @@ const CalculatorLogic = ({
 }) => {
     useEffect(()=> {
         // 숫자로 변환
-        const exchange = parseFloat(exRate) || 0;
-        const buy = parseFloat(purchase) || 0;
+        const exchangeRate = parseFloat(exRate) || 0; // 환율
+        const buy = parseFloat(purchase) || 0; // 매입액(외화)
         const delivery = parseFloat(transport) || 0;
         const etcCost = parseFloat(subCost) || 0; // 매입 기타 비용
         const tariffRate = (parseFloat(tariff) || 0) / 100;
@@ -23,14 +23,16 @@ const CalculatorLogic = ({
         const otherCost = parseFloat(cost) || 0; // 매출 기타 비용
 
         // 계산식
+        // 원화 + 운임비(기초 과세 대상)
+        const baseKRW = buy + delivery;
         // 관세
-        const tariffAmount = (exchange * buy) * tariffRate;
-        // 관세 포함 원가 + 기타 비용 (운송비 등)
-        const baseCost = (exchange * buy) + tariffAmount + delivery + etcCost;
+        const tariffAmount = baseKRW * tariffRate;
+        // 과세표준 + 관세
+        const baseCost = baseKRW + tariffAmount;
         // 부가세
         const vatAmount = baseCost * vatRate;
         // 매입 시 발생한 비용
-        const totalPurchaseCost = baseCost + vatAmount;
+        const totalPurchaseCost = baseCost + vatAmount + etcCost;
         // 판매 플랫폼 수수료
         const platformFeeAmount = sales * platformFeeRate;
         // 총 수수료
@@ -43,8 +45,15 @@ const CalculatorLogic = ({
         // 마진율
         const margin = totalPurchaseCost > 0 ? (benefit / totalPurchaseCost) * 100 : 0;
 
+        console.log({
+  buy, exchangeRate, buy, delivery,
+  baseKRW, tariffAmount, baseCost,
+  vatAmount, etcCost, totalPurchaseCost
+});
+
         // 결과 전달
         onResultChange({
+            buy: Math.round(buy),  
             tariffAmount,
             baseCost,
             vatAmount,

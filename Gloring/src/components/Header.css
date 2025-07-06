@@ -5,7 +5,12 @@
   top: 0;
   z-index: 50;
   width: 100%;
-  height: 10%;
+  /* 헤더 움직임에 부드러운 전환 효과를 적용 */
+  transition: transform 0.3s ease-in-out;
+}
+
+.header.hide {
+  transform: translateY(-100%);
 }
 
 .header-inner {
@@ -15,7 +20,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 1rem;
 }
 
 .nav {
