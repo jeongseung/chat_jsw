@@ -318,11 +318,16 @@ input {
   font-size: 13px;
 }
 
-.result-table th,
+.result-table th {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: center;
+}
 .result-table td {
   border: 1px solid #ccc;
   padding: 8px 12px;
   text-align: center;
+  cursor: pointer;
 }
 
 .result-table th {
