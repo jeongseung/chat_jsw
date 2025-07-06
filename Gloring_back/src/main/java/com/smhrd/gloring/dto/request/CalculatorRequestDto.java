@@ -41,6 +41,7 @@ public class CalculatorRequestDto {
     private Integer totalFee;
     private LocalDate saveDate;
     private Integer cost;
+    private Double country_money;
     
     // DTO를 Entity로 변환하는 메서드
     public Calculator toEntity() {
@@ -66,6 +67,7 @@ public class CalculatorRequestDto {
                 .fta(fta)
                 .totalFee(totalFee)
                 .cost(cost)
+                .country_money(country_money)
                 .saveDate(LocalDate.now()) // 저장 시점의 날짜 자동 설정
                 .build();
     }

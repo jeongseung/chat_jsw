@@ -18,7 +18,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.smhrd.gloring.jwt.JwtAuthenticationFilter;
-
+import com.smhrd.gloring.oauth.CustomOAuth2UserService;
+import com.smhrd.gloring.oauth.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -27,7 +28,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final OAuth2LoginSuccessHandler OAuth2LoginSuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
 
     // 비밀번호 암호화
     @Bean
@@ -74,8 +78,15 @@ public class SecurityConfig {
                         // "/api/auth/**" 경로는 모두 허용
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                // OAuth2 로그인 설정 추가
+                .oauth2Login(oauth2 -> oauth2
+                    .userInfoEndpoint(userInfo -> userInfo
+                        .userService(customOAuth2UserService) // 커스텀 서비스 등록
+                    )
+                    .successHandler(OAuth2LoginSuccessHandler) // 성공 핸들러 등록
                 );
-                // h2-console을 위한 헤더 설정
+
       
         // 직접 만든 JWT 필터를 UsernamePasswordAuthenticationFilter 전에 추가
         //이 필터가 요청 헤더의 JWT를 검사하여 사용자를 인증

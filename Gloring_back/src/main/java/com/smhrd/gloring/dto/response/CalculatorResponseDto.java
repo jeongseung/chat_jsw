@@ -39,6 +39,7 @@ public class CalculatorResponseDto {
     private Integer totalFee;
     private LocalDate saveDate;
     private Integer cost;
+    private Double country_money;
 
     // Entity를 DTO로 변환하는 생성자
     public CalculatorResponseDto(Calculator calculator) {
@@ -65,6 +66,7 @@ public class CalculatorResponseDto {
         this.totalFee = calculator.getTotalFee();
         this.saveDate = calculator.getSaveDate();
         this.cost = calculator.getCost();
+        this.country_money = calculator.getCountry_money();
     }
 
 

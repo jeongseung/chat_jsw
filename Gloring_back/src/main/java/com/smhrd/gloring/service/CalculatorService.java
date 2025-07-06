@@ -113,7 +113,8 @@ public class CalculatorService {
                 entity.getFta(),
                 entity.getTotalFee(),
                 entity.getSaveDate(),
-                entity.getCost()
+                entity.getCost(),
+                entity.getCountry_money()
         );
     }
 

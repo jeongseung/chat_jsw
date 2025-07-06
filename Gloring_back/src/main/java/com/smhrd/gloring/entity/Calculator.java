@@ -74,5 +74,8 @@ public class Calculator {
     private LocalDate saveDate;
 
     private Integer cost;
+    
+    @Column(nullable = false)
+    private Double country_money;
     // getters and setters
 }
