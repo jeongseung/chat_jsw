@@ -50,9 +50,7 @@ public class CalculatorService {
             System.out.println(">>> UserCalculator 저장 성공, 생성된 ID: " + savedUserCalculator.getId());
 
             // 4. 저장된 정보를 Response DTO로 변환하여 반환
-            CalculatorResponseDto cDto = new CalculatorResponseDto(savedCalculator);
-            System.out.println(">>> 최종 결과 DTO 생성 완료");
-            return cDto;
+            return new CalculatorResponseDto(savedCalculator);
 
         } catch (Exception e) {
             // [중요] 예외를 직접 잡아서 전체 스택 트레이스를 콘솔에 출력합니다.
@@ -85,37 +83,6 @@ public class CalculatorService {
     public CalculatorResponseDto getCalculatorById(Long calculatorId) {
         Calculator calculator = calculatorRepository.findById(calculatorId)
                 .orElseThrow(() -> new EntityNotFoundException("Calculator not found with id: " + calculatorId));
-        return convertToDto(calculator);
+        return new CalculatorResponseDto(calculator);
     }
-
-    // Calculator Entity를 CalculatorResponseDto로 변환하는 private 메서드
-    private CalculatorResponseDto convertToDto(Calculator entity) {
-        return new CalculatorResponseDto(
-                entity.getCalId(),
-                entity.getProductName(),
-                entity.getHscode(),
-                entity.getPurchaseAmount(),
-                entity.getExchangeRate(),
-                entity.getOrigin(),
-                entity.getTariff(),
-                entity.getOtherCost(),
-                entity.getPurchaseCost(),
-                entity.getExpectedSales(),
-                entity.getFreightFee(),
-                entity.getAdCost(),
-                entity.getPlatformFee(),
-                entity.getShippingFee(),
-                entity.getOtherFees(),
-                entity.getNetSales(),
-                entity.getRevenueRate(),
-                entity.getProfit(),
-                entity.getVat(),
-                entity.getFta(),
-                entity.getTotalFee(),
-                entity.getSaveDate(),
-                entity.getCost(),
-                entity.getCountry_money()
-        );
-    }
-
 }

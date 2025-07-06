@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import com.smhrd.gloring.entity.Calculator;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -18,56 +17,56 @@ public class CalculatorResponseDto {
 
     private Long calId;
     private String productName;
-    private Integer hscode;
-    private Double purchaseAmount;
-    private Double exchangeRate;
     private String origin;
-    private Integer tariff;
-    private Integer otherCost;
-    private Integer purchaseCost;
-    private Integer expectedSales;
-    private Integer freightFee;
-    private Integer adCost;
-    private Double platformFee;
-    private Double shippingFee;
-    private Double otherFees;
-    private Integer netSales;
-    private Double revenueRate;
-    private Integer profit;
-    private Integer vat;
-    private Boolean fta;
-    private Integer totalFee;
+    private String hscode;
+    private double exchangeRate;
+    private double purchaseAmountEx;
+    private double purchaseAmount;
+    private int freightFee;
+    private int otherFee;
+    private boolean fta;
+    private double tariff;
+    private int vat;
+    private double purchaseCost;
+    private int expectedSales;
+    private int shippingFee;
+    private int adCost;
+    private double platformFee;
+    private int otherFees;
+    private int totalFee;
+    private int cost;
+    private int netSales;
+    private int profit;
+    private double revenueRate;
     private LocalDate saveDate;
-    private Integer cost;
-    private Double country_money;
+    private String countryMoney;
 
     // Entity를 DTO로 변환하는 생성자
     public CalculatorResponseDto(Calculator calculator) {
         this.calId = calculator.getCalId();
         this.productName = calculator.getProductName();
-        this.hscode = calculator.getHscode();
-        this.purchaseAmount = calculator.getPurchaseAmount();
-        this.exchangeRate = calculator.getExchangeRate();
         this.origin = calculator.getOrigin();
+        this.hscode = calculator.getHscode();
+        this.exchangeRate = calculator.getExchangeRate();
+        this.purchaseAmountEx = calculator.getPurchaseAmountEx();
+        this.purchaseAmount = calculator.getPurchaseAmount();
+        this.freightFee = calculator.getFreightFee();
+        this.otherFee = calculator.getOtherFee();
+        this.fta = calculator.isFta();
         this.tariff = calculator.getTariff();
-        this.otherCost = calculator.getOtherCost();
+        this.vat = calculator.getVat();
         this.purchaseCost = calculator.getPurchaseCost();
         this.expectedSales = calculator.getExpectedSales();
-        this.freightFee = calculator.getFreightFee();
+        this.shippingFee = calculator.getShippingFee();
         this.adCost = calculator.getAdCost();
         this.platformFee = calculator.getPlatformFee();
-        this.shippingFee = calculator.getShippingFee();
         this.otherFees = calculator.getOtherFees();
-        this.netSales = calculator.getNetSales();
-        this.revenueRate = calculator.getRevenueRate();
-        this.profit = calculator.getProfit();
-        this.vat = calculator.getVat();
-        this.fta = calculator.getFta();
         this.totalFee = calculator.getTotalFee();
-        this.saveDate = calculator.getSaveDate();
         this.cost = calculator.getCost();
-        this.country_money = calculator.getCountry_money();
+        this.netSales = calculator.getNetSales();
+        this.profit = calculator.getProfit();
+        this.revenueRate = calculator.getRevenueRate();
+        this.saveDate = calculator.getSaveDate();
+        this.countryMoney = calculator.getCountryMoney();
     }
-
-
 }
