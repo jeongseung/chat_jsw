@@ -46,7 +46,7 @@ const CalculatorLogic = ({
         const margin = totalPurchaseCost > 0 ? (benefit / totalPurchaseCost) * 100 : 0;
 
         console.log({
-  buy, exchangeRate, buy, delivery,
+  buy, exchangeRate, delivery,
   baseKRW, tariffAmount, baseCost,
   vatAmount, etcCost, totalPurchaseCost
 });

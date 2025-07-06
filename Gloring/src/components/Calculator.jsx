@@ -21,7 +21,7 @@ import axios from 'axios';
     'ID':'Rp'
   };
 
-export default function Calculator({isLoggedIn, setIsLoggedIn}) {
+export default function Calculator({isLoggedIn}) {
 
   const [name, setName] = useState("");
   const [origin, setOrigin] = useState("");
@@ -62,19 +62,15 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
   const [displayTotalSales, setDisplayTotalSales] = useState();
   
   const [benefit, setBenefit] = useState();
-  const [displayBenefit, setDisplayBenefit] = useState();
   const [benefitPer, setBenefitPer] = useState(); 
-  const [displayBenefitPer, setDisplayBenefitPer] = useState(); 
 
   const [tariffAmount, setTariffAmount] = useState();
   const [baseCost, setBaseCost] = useState();
   const [vatAmount, setVatAmount] = useState();
   const [fee, setFee] = useState();
 
-  const [result, setResult] = useState([]);
   const [hsData, setHsData] = useState([]);
 
-  const [selectedCode, setSelectedCode] = useState(null);
 
   const purchaseRef = useRef(null);
   const transportRef = useRef(null);
@@ -158,10 +154,6 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
       el.setSelectionRange(pos, pos);
     }
   }, [displayCost]);
-
-  // useEffect(() => {
-  //   setExRate(exRate);
-  // });
 
 
   const formatNumber = (num) => {
@@ -321,25 +313,52 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
     }
   };
   
-  const submit = (e) => {
+  const submit = async(e) => {
         e.preventDefault();
-        
-        // if (!isLoggedIn) {
-        //   alert("로그인 후 이용 가능합니다.");
-        //   return;
-        // }
-        const now = new Date().toLocaleDateString(); //클릭 시점의 날짜
+
+        const token = localStorage.getItem("token")
+
         const newEntry = {
-          date: now,
-          name,
-          purchase, 
-          sales,
-          benefit,
-          benefitPer
+          productName: name,
+          origin: origin,
+          hscode: hsCode,
+          exchangeRate: parseFloat(exRate || 0),
+          purchaseAmountEx: parseFloat(foreignPurchase || 0),
+          purchaseAmount: parseFloat(displayPurchase || 0),
+          freightFee: parseInt(displayTransport || 0),
+          otherFee: parseInt(displaySubCost || 0),
+          fta: fta === "FTA 적용 가능합니다!" ? true : false,
+          tariff: parseFloat(tariff || 0),
+          vat: parseInt(vat || 0),
+          purchaseCost: parseFloat(displayTotalPurchase || 0),
+          expectedSales: parseInt(displaySales || 0),
+          shippingFee: parseInt(displayTransportCost || 0),
+          adCost: parseInt(displayAdCost || 0),
+          platformFee: parseFloat(displayPlatFormFee || 0),
+          otherFees: parseInt(displaySubFee || 0),
+          totalFee: parseInt(displayTotalFee || 0),
+          cost: parseInt(displayCost || 0),
+          netSales: parseInt(displayTotalSales || 0),
+          profit: parseInt(benefit || 0),
+          revenueRate: parseFloat(benefitPer || 0),
+          countryMoney: selectedCountryCode
         };
 
-        setHistory(prev => [...prev, newEntry]); // 이전 내역 + 새 내역 추가
-        alert("저장되었습니다!");
+        console.log(newEntry.expectedSales)
+
+        try {
+          const res = await axios.post("http://localhost:8090/gloring/cal", newEntry, {
+            headers: { Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+          });
+          alert("저장완료!");
+          setHistory(prev => [...prev, newEntry])
+        } catch (error) {
+          console.error("저장 실패 : ", error)
+          alert("저장 중 오류 발생")
+        }
+
     }
 
 
@@ -375,6 +394,15 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
       setSumModalOpen(false);
     }
 
+    const checkLogin = (e) => {
+      e.preventDefault();
+      if (isLoggedIn) {
+        setSumModalOpen(true)
+      } else {
+        alert("계산 이력 확인은 로그인 후 이용 가능합니다.")
+      }
+    }
+
   return (
     <section className="calculator">
       <div className="calculator-header">
@@ -382,14 +410,8 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
           <h2 className="calculator-title">순이익 계산 시뮬레이터</h2>
           <p className="calculator-desc">AI로 HS코드를 추천 받고 편하게 계산해보세요.</p>
         </div>
-        <button type="button" className="history-button" onClick={(e) => { e.preventDefault();
-        // if (!isLoggedIn) {
-        //   alert("로그인 후 이용 가능합니다.");
-        //   return;
-        // }
-        setSumModalOpen(true);
-        }}>계산 이력 확인</button>
-        <Modal isOpen={sumModalOpen} onClose={()=>setSumModalOpen(false)}>
+        <button type="button" className="history-button" onClick={checkLogin}>계산 이력 확인</button>
+        {isLoggedIn && (<Modal isOpen={sumModalOpen} onClose={()=>setSumModalOpen(false)}>
               <h2>계산 내역</h2>
               <hr/>
               <table className="result-table">
@@ -406,7 +428,6 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
                 <tbody>
                 {history.map((item,idx)=>(
                 <tr key={idx} onClick={() => loadCalculation(item)}>
-                  {/* <td>{new Date().toLocaleDateString()}</td> */}
                   <td>{item.date}</td>
                   <td>{item.name}</td>
                   <td>{formatWon(item.purchase)}</td>
@@ -418,6 +439,7 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
                 </tbody>
               </table>
         </Modal>
+        )}
       </div>
       <hr/>
       <form className="calculator-form" action="gloring/cal" method="post" onSubmit={submit} onKeyDown={(e) => {

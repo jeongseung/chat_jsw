@@ -40,13 +40,6 @@ input {
   gap: 100px;
 }
 
-/* .calculator-header button {
-  margin-top: 60px;
-  height: 100%;
-  margin-left: 10px;
-  width: 30%;
-} */
-
 .calculator-title {
   text-align: center;
   font-size: 1.75rem;
