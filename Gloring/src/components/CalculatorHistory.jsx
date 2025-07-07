@@ -24,7 +24,7 @@ const CalculatorHistory = ({ onSelectHistory }) => {
                 setLoading(true);
                 setError(null)
 
-                 const response = await axios.get('http://localhost:8090/gloring/cal', {
+                const response = await axios.get('http://localhost:8090/gloring/cal', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

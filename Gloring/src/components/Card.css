@@ -1,0 +1,27 @@
+.card-content {
+  text-align: center;
+  color: #333;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.card-content h3 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.card-content .keyword-list {
+  line-height: 1.5; /* 줄 간격 조절 */
+  white-space: pre-wrap; /* 줄바꿈 유지 */
+  text-align: left; /* 키워드 목록 왼쪽 정렬 */
+  padding: 0 10px;
+  margin: 0;
+  color: #555;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-y: auto; /* 내용이 길어지면 스크롤 가능하게 */
+  flex-grow: 1;
+}
