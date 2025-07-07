@@ -5,12 +5,8 @@ from router import ai_router
 app = FastAPI()
 
 origins = [
-<<<<<<< HEAD
-    "http://localhost:5000",
-=======
-    "http://localhost:5173",
->>>>>>> 54271c89f25123f4bb882eb54f22b800964a05ba
-    "http://localhost:8090"
+    "http://43.201.67.86:5173",
+    "http://43.201.67.86:8090"
 ]
 
 app.add_middleware(
