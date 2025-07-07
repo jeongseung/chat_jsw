@@ -88,7 +88,7 @@ export default function Calculator() {
     sales, 
     transportCost, 
     adCost, 
-    platForm, 
+    platForm:platFormFee, 
     subFee, 
     cost, 
     onResultChange: setResult
