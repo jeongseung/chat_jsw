@@ -329,7 +329,6 @@ export default function Calculator() {
   };
   
   const submit = async(e) => {
-      
         e.preventDefault();
         console.log("submit 실행")
 
@@ -341,21 +340,21 @@ export default function Calculator() {
           hscode: hsCode,
           exchangeRate: parseFloat(exRate || 0),
           purchaseAmountEx: parseFloat(foreignPurchase || 0),
-          purchaseAmount: parseFloat(displayPurchase || 0),
-          freightFee: parseInt(displayTransport || 0),
-          otherFee: parseInt(displaySubCost || 0),
+          purchaseAmount: parseFloat(purchase || 0),
+          freightFee: parseInt(transport || 0),
+          otherFee: parseInt(subCost || 0),
           fta: fta === "FTA 적용 가능합니다!" ? true : false,
           tariff: parseFloat(tariff || 0),
           vat: parseInt(vat || 0),
-          purchaseCost: parseFloat(displayTotalPurchase || 0),
-          expectedSales: parseInt(displaySales || 0),
-          shippingFee: parseInt(displayTransportCost || 0),
-          adCost: parseInt(displayAdCost || 0),
-          platformFee: parseFloat(displayPlatFormFee || 0),
-          otherFees: parseInt(displaySubFee || 0),
-          totalFee: parseInt(displayTotalFee || 0),
-          cost: parseInt(displayCost || 0),
-          netSales: parseInt(displayTotalSales || 0),
+          purchaseCost: parseFloat(totalPurchase || 0),
+          expectedSales: parseInt(sales || 0),
+          shippingFee: parseInt(transportCost || 0),
+          adCost: parseInt(adCost || 0),
+          platformFee: parseFloat(platFormFee || 0),
+          otherFees: parseInt(subFee || 0),
+          totalFee: parseInt(totalFee || 0),
+          cost: parseInt(cost || 0),
+          netSales: parseInt(totalSales || 0),
           profit: parseInt(benefit || 0),
           revenueRate: parseFloat(benefitPer || 0),
           countryMoney: selectedCountryCode
@@ -482,7 +481,7 @@ export default function Calculator() {
         )}
       </div>
       <hr/>
-      <form className="calculator-form" action="gloring/cal" method="post" onKeyDown={(e) => {
+      <form className="calculator-form" action="gloring/cal" method="post" onSubmit={submit} onKeyDown={(e) => {
         if (e.key === "Enter") e.preventDefault();}}>
           <div className="calculator-basic">
             <label>품목명 {'>'}</label>
@@ -849,15 +848,7 @@ export default function Calculator() {
           </div>
         </div>
         <div className="calculator-actions">
-          <button className="submit-button"
-            onClick={ (e) => {
-              e.preventDefault();
-              const token = localStorage.getItem("token")
-              if (token) {
-                submit(e);
-              } else {
-                alert("로그인 후 이용 가능한 서비스입니다.")
-              }}} >저장하기</button>
+          <button onClick={submit} className="submit-button">저장하기</button>
         </div>
       </form>
     </section>
