@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         // 소셜 로그인 콜백 경로를 허용하도록 수정
-                        .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/**").permitAll()
+                        .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/**", "/users/**", "/exchange-rates/**", "/rankings").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
