@@ -1,16 +1,30 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import Footer from './Footer'
 import Main from './Main'
 import Banner from './Banner'
-import Header from './Header'
-import YoutubeSession from "./YoutubeSession";
+import Header from './Header';
+import { useLocation } from 'react-router-dom';
 
-const Home = ({authenticate, setAuthenticate}) => {
+const Home = ({isLoggedIn, setIsLoggedIn}) => {
+  const location = useLocation()
 
-    
+  useEffect(() => {
+    const scrollTo = location.state?.scrollTo;
+
+    if (scrollTo) {
+      const el = document.getElementById(scrollTo);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // 렌더링 후 동작 보장
+      }
+    }
+  }, [location]);
+
+
   return (
     <div className='web-container'>
-      <Header authenticate={authenticate} setAuthenticate={setAuthenticate}/>
+      <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
       <Banner/>
       <Main/>
       <Footer/>

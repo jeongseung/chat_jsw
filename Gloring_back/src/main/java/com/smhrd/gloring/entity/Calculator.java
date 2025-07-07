@@ -26,53 +26,56 @@ import lombok.ToString;
 public class Calculator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cal_id")
     private Long calId;
 
     @Column(nullable = false)
     private String productName;
 
     @Column(nullable = false)
-    private Integer hscode;
-
-    @Column(nullable = false)
-    private Double purchaseAmount;
-
-    @Column(nullable = false)
-    private Double exchangeRate;
-
-    @Column(nullable = false)
     private String origin;
 
     @Column(nullable = false)
-    private Integer tariff;
-
-    private Integer otherCost;
-    private Integer purchaseCost;
-    private Integer expectedSales;
-    private Integer freightFee;
-    private Integer adCost;
-    private Double platformFee;
-    private Double shippingFee;
-    private Double otherFees;
+    private String hscode;
 
     @Column(nullable = false)
-    private Integer netSales;
+    private double exchangeRate;
 
     @Column(nullable = false)
-    private Double revenueRate;
+    private double purchaseAmountEx;
 
     @Column(nullable = false)
-    private Integer profit;
+    private double purchaseAmount;
 
-    private Integer vat;
+    private int freightFee;
+    private int otherFee;
+    private boolean fta;
 
-    private Boolean fta;
+    @Column(nullable = false)
+    private double tariff;
 
-    private Integer totalFee;
+    private int vat;
+    private double purchaseCost;
+    private int expectedSales;
+    private int shippingFee;
+    private int adCost;
+    private double platformFee;
+    private int otherFees;
+    private int totalFee;
+    private int cost;
+
+    @Column(nullable = false)
+    private int netSales;
+
+    @Column(nullable = false)
+    private int profit;
+
+    @Column(nullable = false)
+    private double revenueRate;
 
     @Column(nullable = false)
     private LocalDate saveDate;
 
-    private Integer cost;
-    // getters and setters
+    @Column(nullable = false)
+    private String countryMoney;
 }

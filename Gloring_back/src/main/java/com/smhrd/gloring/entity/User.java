@@ -18,54 +18,61 @@ import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name="users")
 public class User implements UserDetails {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="user_id")
-	private Long id;
-	
-	@Column(unique = true, nullable = false)
-	private String email;
-	
-	@Column(nullable = false)
-	private String name;
-	
-	@Column(nullable = false)
-	private String password;
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="user_id")
+    private Long id;
+    
+    @Column(unique = true, nullable = false)
+    private String email;
+    
+    @Column(nullable = false)
+    private String name;
+    
+    // 소셜 로그인은 비밀번호가 없으므로 nullable = true
+    @Column(nullable = true)
+    private String password;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    // OAuth2 제공자 및 제공자 ID 추가
+    private String provider;
+    private String providerId;
+
     @Builder
-    public User(String email, String name, String password, Role role) {
+    public User(String email, String name, String password, Role role, String provider, String providerId) {
         this.email = email;
         this.name = name;
         this.password = password;
         this.role = role;
+        this.provider = provider;
+        this.providerId = providerId;
     }
     
-    // Role 필드 추가
-    @Enumerated(EnumType.STRING) // Enum 이름을 DB에 문자열로 저장
-    @Column(nullable = false)
-    private Role role;
+    // OAuth2 사용자의 정보 업데이트를 위한 메서드
+    public User update(String name) {
+        this.name = name;
+        return this;
+    }
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return List.of(new SimpleGrantedAuthority(this.role.getKey()));
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.role.getKey()));
+    }
 
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return email;
-	}
-	
+    @Override
+    public String getUsername() {
+        return email;
+    }
     
     @Override
     public String getPassword() {
@@ -74,24 +81,21 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // 계정 만료 여부
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // 계정 잠금 여부
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // 자격 증명(비밀번호) 만료 여부
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true; // 계정 활성화 여부
+        return true;
     }
-    
-
-    
 }

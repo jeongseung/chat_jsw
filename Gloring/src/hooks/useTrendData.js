@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
 export default function useTrendData (term, category) {
@@ -8,15 +9,20 @@ export default function useTrendData (term, category) {
     useEffect(() => {
         const fetchRankings = async () => {
             setLoading(true)
+            setError(null);
             try {
-                const res = await fetch(
-                    `http://localhost:8090/gloring/rankings?categoryName=${encodeURIComponent(category)}&period=${encodeURIComponent(term)}`
+                const res = await axios.get(
+                    `http://43.201.67.86:8090/gloring/rankings`, {
+                        params: {
+                            categoryName: category,
+                            period: term
+                        }
+                    }
                 )
-                if (!res.ok) throw new Error('데이터 요청 실패')
-                const data = await res.json()
-                setRankings(data.rankings || [])
+                setRankings(res.data.rankings || [])
+
             } catch (err) {
-                console.error(err);
+                console.error("데이터 요청 실패", err);
                 setError(err);
             } finally {
                 setLoading(false);

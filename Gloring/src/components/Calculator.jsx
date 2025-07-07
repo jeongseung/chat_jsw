@@ -1,27 +1,21 @@
 import React, { useEffect, useRef } from "react";
 import "./Calculator.css";
 import {useState} from 'react'
-import CalculatorLogic from "./CalculatorLogic";
 import Modal from "./Modal";
 import axios from 'axios';
+import CalculatorHistory from "./CalculatorHistory";
+import { useCalculatorUtils } from "../utils/calculatorHooks";
+import useCalculatorLogic from "../hooks/calculatorLogic";
+import { countryMap } from "../utils/countryMap";
 
-  const countryMap = {
-    'CN':'元',
-    'US':'$',
-    'JP':'¥',
-    'SA':'﷼',
-    'VN':'₫',
-    'AU':'A$($)',
-    'TW':'NT$',
-    'RU':'₽',
-    'QA':'ر.ق',
-    'KW':'د.ك',
-    'MY':'RM',
-    'AE':'د.إ',
-    'ID':'Rp'
-  };
+  const {
+    formatNumber,
+    formatWon,
+    parseNumber,
+    formatPercent
+  } = useCalculatorUtils()
 
-export default function Calculator({isLoggedIn, setIsLoggedIn}) {
+export default function Calculator() {
 
   const [name, setName] = useState("");
   const [origin, setOrigin] = useState("");
@@ -62,19 +56,17 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
   const [displayTotalSales, setDisplayTotalSales] = useState();
   
   const [benefit, setBenefit] = useState();
-  const [displayBenefit, setDisplayBenefit] = useState();
   const [benefitPer, setBenefitPer] = useState(); 
-  const [displayBenefitPer, setDisplayBenefitPer] = useState(); 
 
   const [tariffAmount, setTariffAmount] = useState();
   const [baseCost, setBaseCost] = useState();
   const [vatAmount, setVatAmount] = useState();
   const [fee, setFee] = useState();
 
-  const [result, setResult] = useState([]);
   const [hsData, setHsData] = useState([]);
 
-  const [selectedCode, setSelectedCode] = useState(null);
+  const [result, setResult] = useState({})
+
 
   const purchaseRef = useRef(null);
   const transportRef = useRef(null);
@@ -86,6 +78,49 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
   const etcFeeRef = useRef(null);
   const subCostRef = useRef(null);
   
+  useCalculatorLogic({
+    exRate, 
+    purchase, 
+    transport, 
+    subCost, 
+    tariff, 
+    vat, 
+    sales, 
+    transportCost, 
+    adCost, 
+    platForm:platFormFee, 
+    subFee, 
+    cost, 
+    onResultChange: setResult
+  })
+
+  useEffect (() => {
+    const {
+      tariffAmount = 0,
+      baseCost = 0,
+      vatAmount = 0,
+      totalPurchaseCost = 0,
+      totalSales = 0,
+      fee = 0,
+      benefit = 0,
+      margin = 0
+    } = result;
+
+    setTariffAmount(tariffAmount);
+    setBaseCost(baseCost);
+    setVatAmount(vatAmount);
+    setTotalPurchase(totalPurchaseCost);
+    setDisplayTotalPurchase(totalPurchaseCost.toLocaleString());
+    setTotalSales(totalSales);
+    setDisplayTotalSales(totalSales.toLocaleString());
+    setFee(fee);
+    setBenefit(benefit);
+    setBenefitPer(margin);
+    setTotalFee(fee);
+    setDisplayTotalFee(formatWon(fee));
+  }, [result])
+
+
   useEffect(() => {
     // 커서를 접미사 앞 위치로 설정
     const el = purchaseRef.current;
@@ -158,34 +193,6 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
       el.setSelectionRange(pos, pos);
     }
   }, [displayCost]);
-
-  // useEffect(() => {
-  //   setExRate(exRate);
-  // });
-
-
-  const formatNumber = (num) => {
-    if (num === undefined || num === null || num === '') return '';
-    const number = typeof num === 'string' ? parseInt(num.replace(/,/g, ''), 10) : num;
-    if (isNaN(number)) return '';
-    return number.toLocaleString();
-  };
-  
-  const formatWon = (num) => {
-    const formatted = formatNumber(num);
-    return formatted ? `${formatted}원` : '';
-  }
-
-  const parseNumber = (value) => {
-  if (!value) return 0;
-  return parseInt(value.replace(/[^0-9]/g, ''), 10) || 0;
-  };
-
-  const formatPercent = (num) => {
-    const number = parseFloat(num);
-      if (isNaN(number)) return '';
-      return `${Math.round(number)}%`;
-  };  
   
   const handleChange = (setValue, setDisplay) => (e) => {
     const value = e.target.value;
@@ -215,7 +222,7 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
     }
     setHsModalOpen(true);
     try {
-      const response = await axios.post("http://localhost:8000/ai/getHscode",{
+      const response = await axios.post("http://43.201.67.86:8000/ai/getHscode",{
         item: name,
       });
       
@@ -246,7 +253,7 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
     const origin_country = countryMap[origin] || origin;
 
     try {
-    const response = await axios.post("http://localhost:8000/ai/getFta", {
+    const response = await axios.post("http://43.201.67.86:8000/ai/getFta", {
       hscode: hsCode,
       origin_country: origin_country,
     });
@@ -284,7 +291,7 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
     console.log("선택한 국가코드:", selected);
 
     try {
-      const response = await axios.get(`http://localhost:8090/gloring/exchange-rates/${selected}`);
+      const response = await axios.get(`http://43.201.67.86:8090/gloring/exchange-rates/${selected}`);
       console.log("환율 응답 데이터:", response.data);
       const rate = parseFloat(response.data.exchangeRate);
 
@@ -321,26 +328,59 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
     }
   };
   
-  const submit = (e) => {
+  const submit = async(e) => {
         e.preventDefault();
-        
-        // if (!isLoggedIn) {
-        //   alert("로그인 후 이용 가능합니다.");
-        //   return;
-        // }
-        const now = new Date().toLocaleDateString(); //클릭 시점의 날짜
+        console.log("submit 실행")
+
+        const token = localStorage.getItem("token") || localStorage.getItem("accessToken")
+
         const newEntry = {
-          date: now,
-          name,
-          purchase, 
-          sales,
-          benefit,
-          benefitPer
+          productName: name,
+          origin: origin,
+          hscode: hsCode,
+          exchangeRate: parseFloat(exRate || 0),
+          purchaseAmountEx: parseFloat(foreignPurchase || 0),
+          purchaseAmount: parseFloat(purchase || 0),
+          freightFee: parseInt(transport || 0),
+          otherFee: parseInt(subCost || 0),
+          fta: fta === "FTA 적용 가능합니다!" ? true : false,
+          tariff: parseFloat(tariff || 0),
+          vat: parseInt(vat || 0),
+          purchaseCost: parseFloat(totalPurchase || 0),
+          expectedSales: parseInt(sales || 0),
+          shippingFee: parseInt(transportCost || 0),
+          adCost: parseInt(adCost || 0),
+          platformFee: parseFloat(platFormFee || 0),
+          otherFees: parseInt(subFee || 0),
+          totalFee: parseInt(totalFee || 0),
+          cost: parseInt(cost || 0),
+          netSales: parseInt(totalSales || 0),
+          profit: parseInt(benefit || 0),
+          revenueRate: parseFloat(benefitPer || 0),
+          countryMoney: selectedCountryCode
         };
 
-        setHistory(prev => [...prev, newEntry]); // 이전 내역 + 새 내역 추가
-        alert("저장되었습니다!");
+        console.log(newEntry.expectedSales)
+
+        if (token) {
+          try {
+            const res = await axios.post("http://43.201.67.86:8090/gloring/cal", newEntry, {
+              headers: { Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json"
+            }
+            });
+            alert("저장완료!");
+            setHistory(prev => [...prev, newEntry])
+          } catch (error) {
+            console.error("저장 실패 : ", error)
+            alert("저장 중 오류 발생")
+          }
+        } else {
+          alert("로그인 후 이용하실 수 있습니다.")
+        }
+        
     }
+
 
 
     const [hsModalOpen, setHsModalOpen] = useState(false);
@@ -364,17 +404,73 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
     }, [hsModalOpen, sumModalOpen]);
 
 
-    const loadCalculation = (data) => {
-      setName(data.name);
-      setPurchase(data.purchase);
-      setDisplayPurchase(data.purchase.toLocaleString());
-      setSales(data.sales);
-      setDisplaySales(data.sales.toLocaleString());
-      setBenefit(data.benefit);
-      setBenefitPer(data.benefitPer);
-      setSumModalOpen(false);
+
+    const checkLogin = (e) => {
+      e.preventDefault();
+      const token = localStorage.getItem("token") || localStorage.getItem("accessToken")
+      if (token) {
+        setSumModalOpen(true)
+      } else {
+        alert("계산 이력 확인은 로그인 후 이용 가능합니다.")
+      }
     }
 
+    const onSelectHistory = (entry) => {
+      setName(entry.productName || "");
+      setOrigin(entry.origin || "");
+      setHsCode(entry.hscode || "");
+      setSelectedCountryCode(entry.countryMoney || "CN");
+      setExRate(entry.exchangeRate || "");
+
+      // 매입
+      setForeignPurchase(entry.purchaseAmountEx || "");
+      setPurchase(entry.purchaseAmount || 0);
+      setDisplayPurchase(entry.purchaseAmount.toLocaleString());
+
+      setTransport(entry.freightFee || 0);
+      setDisplayTransport(entry.freightFee.toLocaleString());
+
+      setSubCost(entry.otherFee || 0);
+      setDisplaySubCost(entry.otherFee.toLocaleString());
+
+      setFta(entry.fta ? "FTA 적용 가능합니다!" : "FTA 적용이 불가능합니다!");
+      setTariff(entry.tariff || 8);
+      setVat(entry.vat + "%");
+
+      // 매입원가
+      setTotalPurchase(entry.purchaseCost || 0);
+      setDisplayTotalPurchase(entry.purchaseCost.toLocaleString());
+
+      // 매출
+      setSales(entry.expectedSales || 0);
+      setDisplaySales(entry.expectedSales.toLocaleString());
+
+      setTransportCost(entry.shippingFee || 0);
+      setDisplayTransportCost(entry.shippingFee.toLocaleString());
+
+      setAdCost(entry.adCost || 0);
+      setDisplayAdCost(entry.adCost.toLocaleString());
+
+      setPlatFormFee(entry.platformFee || "");
+      setDisplayPlatFormFee(entry.platformFee);
+
+      setSubFee(entry.otherFees || 0);
+      setDisplaySubFee(entry.otherFees.toLocaleString());
+
+      setCost(entry.cost || 0);
+      setDisplayCost(entry.cost.toLocaleString());
+
+      setTotalSales(entry.netSales || 0);
+      setDisplayTotalSales(entry.netSales.toLocaleString());
+
+      setBenefit(entry.profit || 0);
+      setBenefitPer(entry.revenueRate || 0);
+
+      setSumModalOpen(false)
+    };
+
+
+  
   return (
     <section className="calculator">
       <div className="calculator-header">
@@ -382,42 +478,12 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
           <h2 className="calculator-title">순이익 계산 시뮬레이터</h2>
           <p className="calculator-desc">AI로 HS코드를 추천 받고 편하게 계산해보세요.</p>
         </div>
-        <button type="button" className="history-button" onClick={(e) => { e.preventDefault();
-        // if (!isLoggedIn) {
-        //   alert("로그인 후 이용 가능합니다.");
-        //   return;
-        // }
-        setSumModalOpen(true);
-        }}>계산 이력 확인</button>
-        <Modal isOpen={sumModalOpen} onClose={()=>setSumModalOpen(false)}>
-              <h2>계산 내역</h2>
-              <hr/>
-              <table className="result-table">
-                <thead>
-                  <tr>
-                    <th>계산 일자</th>
-                    <th>상품명</th>
-                    <th>매입액</th>
-                    <th>매출액</th>
-                    <th>순이익</th>
-                    <th>매입 비용 대비 이익률</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {history.map((item,idx)=>(
-                <tr key={idx} onClick={() => loadCalculation(item)}>
-                  {/* <td>{new Date().toLocaleDateString()}</td> */}
-                  <td>{item.date}</td>
-                  <td>{item.name}</td>
-                  <td>{formatWon(item.purchase)}</td>
-                  <td>{formatWon(item.sales)}</td>
-                  <td>{formatWon(item.benefit)}</td>
-                  <td>{formatPercent(item.benefitPer)}</td>
-                </tr>
-                ))}
-                </tbody>
-              </table>
-        </Modal>
+        <button type="button" className="history-button" onClick={checkLogin}>계산 이력 확인</button>
+        {sumModalOpen && (
+          <Modal isOpen={sumModalOpen} onClose={()=>setSumModalOpen(false)}>
+            <CalculatorHistory onSelectHistory={onSelectHistory}/>
+          </Modal>
+        )}
       </div>
       <hr/>
       <form className="calculator-form" action="gloring/cal" method="post" onSubmit={submit} onKeyDown={(e) => {
@@ -597,7 +663,6 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
           <div className="calculator-group">
             <label>예상 판매가</label>
             <input ref={salesRef} type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displaySales)} onChange={handleChange(setSales, setDisplaySales)}
             onClick={() => {const el = salesRef.current;
               if (el) {
@@ -626,7 +691,6 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
               </div>
             </div>
             <input ref={transportCostRef} type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displayTransportCost)} onChange={handleChange(setTransportCost, setDisplayTransportCost)}
             onClick={() => {const el = transportCostRef.current;
               if (el) {
@@ -708,7 +772,6 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
               <li>
                 <label>기타 수수료</label>
                 <input ref={etcFeeRef} type="text" placeholder="0원" className="ect-fee"
-                inputMode="numeric" pattern="[0-9]*"
                 value={formatWon(displaySubFee)} onChange={handleChange(setSubFee, setDisplaySubFee)}
                 onClick={() => {const el = etcFeeRef.current;
               if (el) {
@@ -727,7 +790,6 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
               <li>
                 <label>총 수수료</label>
                 <input type="text" placeholder="0원" className="ect-fee"
-                inputMode="numeric" pattern="[0-9]*"
                 value={formatWon(displayTotalFee)}
                 readOnly/>
               </li>
@@ -735,7 +797,6 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
             <div className="etc-group">
             <label>매출 시 발생 할 기타 비용</label>
             <input ref={subCostRef} type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displayCost)} onChange={handleChange(setCost, setDisplayCost)}
             onClick={() => {const el = subCostRef.current;
               if (el) {
@@ -792,49 +853,8 @@ export default function Calculator({isLoggedIn, setIsLoggedIn}) {
           </div>
         </div>
         <div className="calculator-actions">
-          <button type="submit" onSubmit={submit} className="submit-button">저장하기</button>
-
+          <button onClick={submit} className="submit-button">저장하기</button>
         </div>
-          <CalculatorLogic
-          exRate={exRate}
-          purchase={purchase}
-          transport={transport}
-          subCost={subCost}
-          tariff={tariff}
-          vat={vat}
-          sales={sales}
-          transportCost={transportCost}
-          adCost={adCost}
-          platForm={platFormFee}
-          subFee={subFee}
-          cost={cost}
-          totalFee={totalFee}
-          onResultChange={(result) => {
-            const {
-              tariffAmount = 0,
-              baseCost = 0,
-              vatAmount = 0,
-              totalPurchaseCost = 0,
-              totalSales = 0,
-              fee = 0,
-              benefit = 0,
-              margin = 0
-            } = result;
-
-            setTariffAmount(tariffAmount);
-            setBaseCost(baseCost);
-            setVatAmount(vatAmount);
-            setTotalPurchase(totalPurchaseCost);
-            setDisplayTotalPurchase(totalPurchaseCost.toLocaleString());
-            setTotalSales(totalSales);
-            setDisplayTotalSales(totalSales.toLocaleString());
-            setFee(fee);
-            setBenefit(benefit);
-            setBenefitPer(margin);
-            setTotalFee(fee);
-            setDisplayTotalFee(formatWon(fee));
-          }}
-        />
       </form>
     </section>
   );

@@ -4,68 +4,65 @@ import java.time.LocalDate;
 
 import com.smhrd.gloring.entity.Calculator;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CalculatorRequestDto {
 
-	private Long calId;
     private String productName;
-    private Integer hscode;
-    private Double purchaseAmount;
-    private Double exchangeRate;
     private String origin;
-    private Integer tariff;
-    private Integer otherCost;
-    private Integer purchaseCost;
-    private Integer expectedSales;
-    private Integer freightFee;
-    private Integer adCost;
-    private Double platformFee;
-    private Double shippingFee;
-    private Double otherFees;
-    private Integer netSales;
-    private Double revenueRate;
-    private Integer profit;
-    private Integer vat;
-    private Boolean fta;
-    private Integer totalFee;
-    private LocalDate saveDate;
-    private Integer cost;
-    
+    private String hscode;
+    private double exchangeRate;
+    private double purchaseAmountEx;
+    private double purchaseAmount;
+    private int freightFee;
+    private int otherFee;
+    private boolean fta;
+    private double tariff;
+    private int vat;
+    private double purchaseCost;
+    private int expectedSales;
+    private int shippingFee;
+    private int adCost;
+    private double platformFee;
+    private int otherFees;
+    private int totalFee;
+    private int cost;
+    private int netSales;
+    private int profit;
+    private double revenueRate;
+    private String countryMoney;
+
     // DTO를 Entity로 변환하는 메서드
     public Calculator toEntity() {
         return Calculator.builder()
                 .productName(productName)
-                .hscode(hscode)
-                .purchaseAmount(purchaseAmount)
-                .exchangeRate(exchangeRate)
                 .origin(origin)
+                .hscode(hscode)
+                .exchangeRate(exchangeRate)
+                .purchaseAmountEx(purchaseAmountEx)
+                .purchaseAmount(purchaseAmount)
+                .freightFee(freightFee)
+                .otherFee(otherFee)
+                .fta(fta)
                 .tariff(tariff)
-                .otherCost(otherCost)
+                .vat(vat)
                 .purchaseCost(purchaseCost)
                 .expectedSales(expectedSales)
-                .freightFee(freightFee)
+                .shippingFee(shippingFee)
                 .adCost(adCost)
                 .platformFee(platformFee)
-                .shippingFee(shippingFee)
                 .otherFees(otherFees)
-                .netSales(netSales)
-                .revenueRate(revenueRate)
-                .profit(profit)
-                .vat(vat)
-                .fta(fta)
                 .totalFee(totalFee)
                 .cost(cost)
+                .netSales(netSales)
+                .profit(profit)
+                .revenueRate(revenueRate)
+                .countryMoney(countryMoney)
                 .saveDate(LocalDate.now()) // 저장 시점의 날짜 자동 설정
                 .build();
     }
