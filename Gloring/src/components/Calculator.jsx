@@ -329,6 +329,7 @@ export default function Calculator() {
   };
   
   const submit = async(e) => {
+      
         e.preventDefault();
         console.log("submit 실행")
 
@@ -481,7 +482,7 @@ export default function Calculator() {
         )}
       </div>
       <hr/>
-      <form className="calculator-form" action="gloring/cal" method="post" onSubmit={submit} onKeyDown={(e) => {
+      <form className="calculator-form" action="gloring/cal" method="post" onKeyDown={(e) => {
         if (e.key === "Enter") e.preventDefault();}}>
           <div className="calculator-basic">
             <label>품목명 {'>'}</label>
@@ -848,7 +849,15 @@ export default function Calculator() {
           </div>
         </div>
         <div className="calculator-actions">
-          <button onClick={submit} className="submit-button">저장하기</button>
+          <button className="submit-button"
+            onClick={ (e) => {
+              e.preventDefault();
+              const token = localStorage.getItem("token")
+              if (token) {
+                submit(e);
+              } else {
+                alert("로그인 후 이용 가능한 서비스입니다.")
+              }}} >저장하기</button>
         </div>
       </form>
     </section>
