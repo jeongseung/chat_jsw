@@ -1,7 +1,7 @@
 .header {
   background: linear-gradient(to bottom, white, #f3f4f6);
   /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 50;
   width: 100%;
