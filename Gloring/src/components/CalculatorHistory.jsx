@@ -20,11 +20,11 @@ const CalculatorHistory = ({ onSelectHistory }) => {
 
             
             try {
-                const token = localStorage.getItem('token')
+                const token = localStorage.getItem('token') || localStorage.getItem("accessToken")
                 setLoading(true);
                 setError(null)
 
-                const response = await axios.get('http://localhost:8090/gloring/cal', {
+                const response = await axios.get('http://43.201.67.86:8090/gloring/cal', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

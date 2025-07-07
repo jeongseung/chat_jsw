@@ -222,7 +222,7 @@ export default function Calculator() {
     }
     setHsModalOpen(true);
     try {
-      const response = await axios.post("http://localhost:8000/ai/getHscode",{
+      const response = await axios.post("http://43.201.67.86:8000/ai/getHscode",{
         item: name,
       });
       
@@ -253,7 +253,7 @@ export default function Calculator() {
     const origin_country = countryMap[origin] || origin;
 
     try {
-    const response = await axios.post("http://localhost:8000/ai/getFta", {
+    const response = await axios.post("http://43.201.67.86:8000/ai/getFta", {
       hscode: hsCode,
       origin_country: origin_country,
     });
@@ -291,7 +291,7 @@ export default function Calculator() {
     console.log("선택한 국가코드:", selected);
 
     try {
-      const response = await axios.get(`http://localhost:8090/gloring/exchange-rates/${selected}`);
+      const response = await axios.get(`http://43.201.67.86:8090/gloring/exchange-rates/${selected}`);
       console.log("환율 응답 데이터:", response.data);
       const rate = parseFloat(response.data.exchangeRate);
 
@@ -332,7 +332,7 @@ export default function Calculator() {
         e.preventDefault();
         console.log("submit 실행")
 
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem("token") || localStorage.getItem("accessToken")
 
         const newEntry = {
           productName: name,
@@ -362,18 +362,23 @@ export default function Calculator() {
 
         console.log(newEntry.expectedSales)
 
-        try {
-          const res = await axios.post("http://localhost:8090/gloring/cal", newEntry, {
-            headers: { Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
+        if (token) {
+          try {
+            const res = await axios.post("http://43.201.67.86:8090/gloring/cal", newEntry, {
+              headers: { Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json"
+            }
+            });
+            alert("저장완료!");
+            setHistory(prev => [...prev, newEntry])
+          } catch (error) {
+            console.error("저장 실패 : ", error)
+            alert("저장 중 오류 발생")
           }
-          });
-          alert("저장완료!");
-          setHistory(prev => [...prev, newEntry])
-        } catch (error) {
-          console.error("저장 실패 : ", error)
-          alert("저장 중 오류 발생")
+        } else {
+          alert("로그인 후 이용하실 수 있습니다.")
         }
+        
     }
 
 
@@ -402,7 +407,7 @@ export default function Calculator() {
 
     const checkLogin = (e) => {
       e.preventDefault();
-      const token = localStorage.getItem("token")
+      const token = localStorage.getItem("token") || localStorage.getItem("accessToken")
       if (token) {
         setSumModalOpen(true)
       } else {

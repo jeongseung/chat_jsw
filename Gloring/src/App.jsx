@@ -11,7 +11,7 @@ function App() {
    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
    useEffect(() => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token") || localStorage.getItem("accessToken")
     setIsLoggedIn(!!token) // !!token -> token이 있을 때 true, 없을 때 false
    },[])
 

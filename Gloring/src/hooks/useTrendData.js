@@ -12,7 +12,7 @@ export default function useTrendData (term, category) {
             setError(null);
             try {
                 const res = await axios.get(
-                    `http://localhost:8090/gloring/rankings`, {
+                    `http://43.201.67.86:8090/gloring/rankings`, {
                         params: {
                             categoryName: category,
                             period: term
