@@ -1,0 +1,75 @@
+.carousel {
+  position: relative;
+  width: 100vw;
+  height: 80vh;
+  max-height: 100vh;
+  margin: auto; /* 중앙 정렬 및 상하 여백 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1200px; /* 3D 원근법 강도 조절 (더 강한 3D 느낌) */
+  overflow: hidden; /* 카드들이 캐러셀 밖으로 나가지 않도록 숨김 */
+  border-radius: 15px;
+}
+
+.card-container {
+  position: absolute;
+  transform: translate(-50%, -50%) var(--transform); /* 중앙 정렬 후 변환 적용 */
+  width: 320px; /* 카드 기본 너비 */
+  background-color: #ffffff; /* 흰색 카드 배경 */
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* 카드 실루엣 및 3D 느낌 강조 그림자 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 15px;
+  box-sizing: border-box;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              z-index 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, z-index, opacity; /* 성능 최적화 */
+  transform-style: preserve-3d; /* 자식 요소의 3D 변환을 유지 */
+}
+
+/* 네비게이션 버튼 */
+.navbar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #047857;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 50%;
+  font-size: 1.8em; /* 아이콘 크기 키움 */
+  cursor: pointer;
+  z-index: 100; /* 카드보다 훨씬 위에 오도록 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px; /* 버튼 크기 */
+  height: 60px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.navbar:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.navbar:disabled {
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: not-allowed;
+  transform: translateY(-50%) scale(1);
+  box-shadow: none;
+}
+
+.navbar.left {
+  left: 20px;
+}
+
+.navbar.right {
+  right: 20px;
+}

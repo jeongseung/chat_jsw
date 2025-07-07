@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import './TrendInsight.css';
 import useTrendData from '../hooks/useTrendData'
+import Carousel from './Carousel';
+import Card from './Card';
 
 
 export default function TrendRanking() {
@@ -12,22 +14,17 @@ export default function TrendRanking() {
     const periods = ['DAILY', 'WEEKLY', 'MONTHLY']
     const categories = ['패션의류', '패션잡화', '화장품/미용', '디지털/가전', '가구/인테리어', '출산/육아', '식품', '스포츠/레저', '생활/건강']
 
-    const { rankings, loading, error } = useTrendData(term, category);
+    const { rankings = [] } = useTrendData(term, category);
 
-    const handlePeriodChange = (term) => {
-        setTerm(term)
+    const handleTermClick = (newTerm) => {
+        setTerm(newTerm)
+        setCurrentIndex(0) // 기간 변경 시 첫 번째 카드로 이동
     }
 
-    const handlePrev = () => {
-        setCurrentIndex(prev => Math.max(prev - 1, 0))
+    const handleCategoryClick = (newCategory) => {
+        setCategory(newCategory)
+        setCurrentIndex(0)
     }
-
-    const handleNext = () => {
-        setCurrentIndex(prev => Math.min(prev + 1, rankings.length - 1))
-    }
-
-    const currentRanking = rankings[currentIndex] || {}
-    const { period, topKeywords = [] } = currentRanking
 
     return (
 
@@ -35,39 +32,32 @@ export default function TrendRanking() {
             <div className="filter">
                 <div className="term">
                     {periods.map(t => (
-                        <button key={t} onClick={() => handlePeriodChange(t)} className={term === t ? 'active' : ''}>
+                        <button key={t} onClick={() => handleTermClick(t)} className={term === t ? 'active' : ''}>
                             {t}
                         </button>
                     ))}
                 </div>
                 <div className="category">
                     {categories.map(c => (
-                        <button key={c} onClick={() => { setCategory(c); setCurrentIndex(0); }} className={category === c ? 'active' : ''}>
-                            {c}
-                        </button>
+                        <button key={c} onClick={() => handleCategoryClick(c)} className={category === c ? 'active' : ''}>{c}</button>
                     ))}
                 </div>
             </div>
             <div className="trend-wrapper">
-                <button className="slide-arrow" onClick={handlePrev} disabled={currentIndex === 0}>◀</button>
-
-                <div className="trend-container">
-                    <h2 className="trend-title">키워드 Best</h2>
-                    <div className="date">{period}</div>
-                    <p>네이버쇼핑에서 많이 검색된 키워드입니다</p>
-                    <ul className="keyword-list">
-                        {topKeywords.map((item, index) => (
-                            <li key={index} className="keyword-item">
-                                <span className="rank">{item.rank}.</span>
-                                <span className="keyword">{item.keyword}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                <button className="slide-arrow" onClick={handleNext} disabled={currentIndex === rankings.length - 1}>▶</button>
+                <Carousel activeIndex={currentIndex} onSetActive={setCurrentIndex}>
+                    {rankings.length === 0 ? (
+                        <div>데이터를 불러오는 중입니다...</div>
+                    ) : (
+                        rankings.map((ranking, idx) => (
+                            <Card
+                                key={idx}
+                                title={`${ranking.period}`}
+                                keywords={ranking.topKeywords}
+                            />
+                        ))
+                    )}
+                </Carousel>
             </div>
-            <hr></hr>
         </div>
     );
 }

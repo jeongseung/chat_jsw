@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import "./Join.css";
 import axios from 'axios';
 
 const Join = () => {
-  const [cookies, setCookie] = useCookies(['user']);
   const navigate = useNavigate();
 
   // 입력 상태 관리

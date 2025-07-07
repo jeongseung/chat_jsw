@@ -88,7 +88,7 @@ export default function Calculator() {
     sales, 
     transportCost, 
     adCost, 
-    platForm, 
+    platForm:platFormFee, 
     subFee, 
     cost, 
     onResultChange: setResult
@@ -330,6 +330,7 @@ export default function Calculator() {
   
   const submit = async(e) => {
         e.preventDefault();
+        console.log("submit 실행")
 
         const token = localStorage.getItem("token")
 
@@ -339,21 +340,21 @@ export default function Calculator() {
           hscode: hsCode,
           exchangeRate: parseFloat(exRate || 0),
           purchaseAmountEx: parseFloat(foreignPurchase || 0),
-          purchaseAmount: parseFloat(displayPurchase || 0),
-          freightFee: parseInt(displayTransport || 0),
-          otherFee: parseInt(displaySubCost || 0),
+          purchaseAmount: parseFloat(purchase || 0),
+          freightFee: parseInt(transport || 0),
+          otherFee: parseInt(subCost || 0),
           fta: fta === "FTA 적용 가능합니다!" ? true : false,
           tariff: parseFloat(tariff || 0),
           vat: parseInt(vat || 0),
-          purchaseCost: parseFloat(displayTotalPurchase || 0),
-          expectedSales: parseInt(displaySales || 0),
-          shippingFee: parseInt(displayTransportCost || 0),
-          adCost: parseInt(displayAdCost || 0),
-          platformFee: parseFloat(displayPlatFormFee || 0),
-          otherFees: parseInt(displaySubFee || 0),
-          totalFee: parseInt(displayTotalFee || 0),
-          cost: parseInt(displayCost || 0),
-          netSales: parseInt(displayTotalSales || 0),
+          purchaseCost: parseFloat(totalPurchase || 0),
+          expectedSales: parseInt(sales || 0),
+          shippingFee: parseInt(transportCost || 0),
+          adCost: parseInt(adCost || 0),
+          platformFee: parseFloat(platFormFee || 0),
+          otherFees: parseInt(subFee || 0),
+          totalFee: parseInt(totalFee || 0),
+          cost: parseInt(cost || 0),
+          netSales: parseInt(totalSales || 0),
           profit: parseInt(benefit || 0),
           revenueRate: parseFloat(benefitPer || 0),
           countryMoney: selectedCountryCode
@@ -373,7 +374,6 @@ export default function Calculator() {
           console.error("저장 실패 : ", error)
           alert("저장 중 오류 발생")
         }
-
     }
 
 
@@ -658,7 +658,6 @@ export default function Calculator() {
           <div className="calculator-group">
             <label>예상 판매가</label>
             <input ref={salesRef} type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displaySales)} onChange={handleChange(setSales, setDisplaySales)}
             onClick={() => {const el = salesRef.current;
               if (el) {
@@ -687,7 +686,6 @@ export default function Calculator() {
               </div>
             </div>
             <input ref={transportCostRef} type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displayTransportCost)} onChange={handleChange(setTransportCost, setDisplayTransportCost)}
             onClick={() => {const el = transportCostRef.current;
               if (el) {
@@ -769,7 +767,6 @@ export default function Calculator() {
               <li>
                 <label>기타 수수료</label>
                 <input ref={etcFeeRef} type="text" placeholder="0원" className="ect-fee"
-                inputMode="numeric" pattern="[0-9]*"
                 value={formatWon(displaySubFee)} onChange={handleChange(setSubFee, setDisplaySubFee)}
                 onClick={() => {const el = etcFeeRef.current;
               if (el) {
@@ -788,7 +785,6 @@ export default function Calculator() {
               <li>
                 <label>총 수수료</label>
                 <input type="text" placeholder="0원" className="ect-fee"
-                inputMode="numeric" pattern="[0-9]*"
                 value={formatWon(displayTotalFee)}
                 readOnly/>
               </li>
@@ -796,7 +792,6 @@ export default function Calculator() {
             <div className="etc-group">
             <label>매출 시 발생 할 기타 비용</label>
             <input ref={subCostRef} type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displayCost)} onChange={handleChange(setCost, setDisplayCost)}
             onClick={() => {const el = subCostRef.current;
               if (el) {
@@ -853,9 +848,8 @@ export default function Calculator() {
           </div>
         </div>
         <div className="calculator-actions">
-          <button type="submit" onSubmit={submit} className="submit-button">저장하기</button>
+          <button onClick={submit} className="submit-button">저장하기</button>
         </div>
-          
       </form>
     </section>
   );
