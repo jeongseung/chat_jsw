@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {useNavigate} from "react-router-dom"
 import axios from 'axios';
 import "./Login.css";
+import SocialLoginButtons from './SocialLoginButtons';
 
 const Login = ({setIsLoggedIn}) => {
     const navigate = useNavigate(); // 페이지 이동을 위한 함수
@@ -96,6 +97,7 @@ const Login = ({setIsLoggedIn}) => {
                     </div>
                 </div>
             </form>
+            <SocialLoginButtons/>
         </div>
     </div>
   )
