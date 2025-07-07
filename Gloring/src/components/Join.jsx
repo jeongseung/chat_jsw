@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./Join.css";
 import axios from 'axios';
+import Header from './Header';
 
 const Join = () => {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const Join = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8090/gloring/users/check-email", {
+      const response = await axios.post("http://43.201.67.86:8090/gloring/users/check-email", {
         email: email
       })
 
@@ -92,6 +93,7 @@ const Join = () => {
 
   return (
     <div className='join'>
+      <Header/>
       <div className='join-from'>
         <h2>회원가입</h2>
         <form onSubmit={handleSignup}>
@@ -114,6 +116,7 @@ const Join = () => {
               <input 
                 type='text' 
                 placeholder='이메일 아이디'
+                required
                 value={emailId}
                 onChange={(e) => {
                   setEmailId(e.target.value);
@@ -162,6 +165,7 @@ const Join = () => {
             <input 
               type='password' 
               placeholder='비밀번호를 입력해주세요' 
+              required
               name='pw'
               value={password}
               onChange={(e) => setPassword(e.target.value)}

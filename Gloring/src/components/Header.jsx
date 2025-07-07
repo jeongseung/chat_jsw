@@ -22,6 +22,17 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     }
   }
 
+  const goToSection = (sectionId) => {
+  if (location.pathname === "/") {
+    // 같은 페이지면 바로 스크롤
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  } else {
+    // 다른 페이지면 해당 섹션으로 이동 요청 (쿼리로 전달)
+    navigate("/", { state: { scrollTo: sectionId}});
+  }
+};
+
   return (
     <header className={`header ${scrollDirection === 'down' ? 'hide' : ''}`}>
       <div className='header-inner'>
@@ -31,8 +42,8 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       onClick={goToHome}
         >Gloring </h1>
         <nav className='nav'>
-          <a href='#calculator' className='nav-btn'>순이익 계산 시뮬레이터</a>
-          <a href='#trend'className='nav-btn'>트렌드 인사이트</a>
+          <a onClick={() => goToSection('calculator')} className='nav-btn'>순이익 계산 시뮬레이터</a>
+          <a onClick={() => goToSection('trend')} className='nav-btn'>트렌드 인사이트</a>
         </nav>
         <nav className='right'>
           {isLoggedIn ? (
