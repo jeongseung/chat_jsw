@@ -1,16 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Footer from './Footer'
 import Main from './Main'
 import Banner from './Banner'
-import Header from './Header'
-import YoutubeSession from "./YoutubeSession";
+import Header from './Header';
 
-const Home = ({authenticate, setAuthenticate}) => {
-
-    
+const Home = ({isLoggedIn, setIsLoggedIn}) => {
   return (
     <div className='web-container'>
-      <Header authenticate={authenticate} setAuthenticate={setAuthenticate}/>
+      <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
       <Banner/>
       <Main/>
       <Footer/>

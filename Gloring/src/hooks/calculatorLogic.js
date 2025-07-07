@@ -1,13 +1,12 @@
-import React from 'react'
-import { useEffect } from 'react'
+import { useEffect } from 'react';
 
-const CalculatorLogic = ({
-    exRate, purchase, transport, subCost, tariff,
-    vat, sales, transportCost, adCost, platForm,
-    subFee, cost, onResultChange
+const useCalculatorLogic = ({
+  exRate, purchase, transport, subCost, tariff,
+  vat, sales, transportCost, adCost, platForm,
+  subFee, cost, onResultChange
 }) => {
-    useEffect(()=> {
-        // 숫자로 변환
+  useEffect(() => {
+     // 숫자로 변환
         const exchangeRate = parseFloat(exRate) || 0; // 환율
         const buy = parseFloat(purchase) || 0; // 매입액(외화)
         const delivery = parseFloat(transport) || 0;
@@ -45,33 +44,22 @@ const CalculatorLogic = ({
         // 마진율
         const margin = totalPurchaseCost > 0 ? (benefit / totalPurchaseCost) * 100 : 0;
 
-        console.log({
-  buy, exchangeRate, buy, delivery,
-  baseKRW, tariffAmount, baseCost,
-  vatAmount, etcCost, totalPurchaseCost
-});
-
-        // 결과 전달
-        onResultChange({
-            buy: Math.round(buy),  
-            tariffAmount,
-            baseCost,
-            vatAmount,
-            totalPurchaseCost,
-            totalSales,
-            fee,
-            benefit: Math.round(benefit),
-            margin: Math.round(margin * 100) / 100 // 소수점 두자리
-        }); 
-    }, [
-        exRate, purchase, transport, subCost, tariff, vat,
-        sales, transportCost, adCost, platForm, subFee, 
-        cost, onResultChange
-    ]);
-
-    // 렌더링 안함
-    return null;
-
+    onResultChange({
+      buy: Math.round(buy),
+      tariffAmount,
+      baseCost,
+      vatAmount,
+      totalPurchaseCost,
+      totalSales,
+      fee,
+      benefit: Math.round(benefit),
+      margin: Math.round(margin * 100) / 100
+    });
+  }, [
+    exRate, purchase, transport, subCost, tariff, vat,
+    sales, transportCost, adCost, platForm, subFee,
+    cost, onResultChange
+  ]);
 };
 
-export default CalculatorLogic
+export default useCalculatorLogic;

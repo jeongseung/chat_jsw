@@ -15,7 +15,7 @@ const Join = () => {
   const [emailDomain, setEmailDomain] = useState('');
   const [isSelfInput, setIsSelfInput] = useState(true);
 
-  const fullEmail = `${emailId}@${emailDomain}`;
+  const email = `${emailId}@${emailDomain}`;
 
   // 이메일 중복체크 관련 상태
   const [emailCheckMessage, setEmailCheckMessage] = useState('');
@@ -24,16 +24,27 @@ const Join = () => {
   const handleSignup = async (e) => {
   e.preventDefault();
 
+  if(!isEmailChecked) {
+    setEmailCheckMessage('이메일 중복체크를 해주세요')
+    return;
+  }
+
   try {
     const response = await axios.post(`http://localhost:8090/gloring/auth/signup`, {
       name,
       password,
-      fullEmail
+      email
     });
 
     console.log("회원가입 성공:", response.data);
+
+    navigate("/Login")
+
   } catch (error) {
+
     console.error("회원가입 실패:", error);
+    alert("회원가입 중 오류가 발생했습니다.")
+
   }
 };
   
@@ -51,65 +62,41 @@ const Join = () => {
 
   // 이메일 형식 검사
   const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   // 이메일 중복체크 버튼 클릭 시
-  const handleEmailCheck = () => {
-    // if (!emailId || !emailDomain) {
-    //   setEmailCheckMessage('이메일을 모두 입력해주세요.');
-    //   setIsEmailChecked(false);
-    //   return;
-    // }
-    // if (!validateEmail(fullEmail)) {
-    //   setEmailCheckMessage('올바른 이메일 형식이 아닙니다.');
-    //   setIsEmailChecked(false);
-    //   return;
-    // }
-    // // 예시 중복 이메일 리스트 (실제 서비스에서는 서버에서 체크)
-    // const existingEmails = ['test@naver.com', 'hello@gmail.com'];
-    // if (existingEmails.includes(fullEmail)) {
-    //   setEmailCheckMessage('이미 사용 중인 이메일입니다.');
-    //   setIsEmailChecked(false);
-    // } else {
-    //   setEmailCheckMessage('사용 가능한 이메일입니다!');
-    //   setIsEmailChecked(true);
-    // }
-
-
-  };
-
-  // 회원가입 제출
-  const goToLogin = (e) => {
-    e.preventDefault();
-    if (!isEmailChecked) {
-      setEmailCheckMessage('이메일 중복체크를 해주세요.');
-      return;
+  const handleEmailCheck = async() => {
+    if (!validateEmail(email)) {
+      alert("이메일 형식이 올바르지 않습니다.")
+      return
     }
 
-    const userData = {
-      name: name,
-      pw: password,
-      emailId: emailId,
-      email: emailDomain
-    };
+    try {
+      const response = await axios.post("http://localhost:8090/gloring/users/check-email", {
+        email: email
+      })
 
-    setCookie('user', JSON.stringify(userData), { path: '/', maxAge: 86400 });
-    // 실제 회원가입 로직 (API 호출 등) 추가
-    console.log("회원가입 정보:", {
-      name,
-      password,
-      email: `${emailId}@${emailDomain}`
-    });
-    navigate("/Login");
+      if (response.data.duplicate) {
+        alert("이미 사용 중인 이메일입니다.")
+        setEmailCheckMessage('사용 불가능한 이메일입니다.')
+      } else {
+        alert("사용 가능한 이메일입니다!")
+        setIsEmailChecked(true)
+        setEmailCheckMessage('')
+      }
+    } catch (error) {
+      console.error("이메일 중복 확인 실패: ", error)
+      alert("서버 오류로 이메일 확인에 실패했습니다.")
+    }
   };
 
   return (
     <div className='join'>
       <div className='join-from'>
         <h2>회원가입</h2>
-        <form onSubmit={goToLogin}>
+        <form onSubmit={handleSignup}>
           {/* 이름 입력 */}
           <div className='join-input-group'>
             <p>이름</p>
@@ -121,17 +108,7 @@ const Join = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          {/* 비밀번호 입력 */}
-          <div className='join-input-group'>
-            <p>비밀번호</p>
-            <input 
-              type='password' 
-              placeholder='비밀번호를 입력해주세요' 
-              name='pw'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+          
           {/* 이메일 입력 + 중복체크 */}
           <div className='join-input-group'>
             <p>이메일</p>
@@ -180,12 +157,24 @@ const Join = () => {
               이메일 중복체크
             </button>
           </div>
+
+          {/* 비밀번호 입력 */}
+          <div className='join-input-group'>
+            <p>비밀번호</p>
+            <input 
+              type='password' 
+              placeholder='비밀번호를 입력해주세요' 
+              name='pw'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
           {/* 회원가입 버튼 */}
           <input 
             type='submit'
             value="회원가입하기"
             className="join-submit-button"
-            onClick={handleSignup}
           />
         </form>
       </div>

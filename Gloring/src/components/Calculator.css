@@ -40,13 +40,6 @@ input {
   gap: 100px;
 }
 
-/* .calculator-header button {
-  margin-top: 60px;
-  height: 100%;
-  margin-left: 10px;
-  width: 30%;
-} */
-
 .calculator-title {
   text-align: center;
   font-size: 1.75rem;
@@ -325,11 +318,16 @@ input {
   font-size: 13px;
 }
 
-.result-table th,
+.result-table th {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: center;
+}
 .result-table td {
   border: 1px solid #ccc;
   padding: 8px 12px;
   text-align: center;
+  cursor: pointer;
 }
 
 .result-table th {
