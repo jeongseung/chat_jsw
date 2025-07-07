@@ -330,6 +330,7 @@ export default function Calculator() {
   
   const submit = async(e) => {
         e.preventDefault();
+        console.log("submit 실행")
 
         const token = localStorage.getItem("token")
 
@@ -373,7 +374,6 @@ export default function Calculator() {
           console.error("저장 실패 : ", error)
           alert("저장 중 오류 발생")
         }
-
     }
 
 
@@ -658,7 +658,6 @@ export default function Calculator() {
           <div className="calculator-group">
             <label>예상 판매가</label>
             <input ref={salesRef} type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displaySales)} onChange={handleChange(setSales, setDisplaySales)}
             onClick={() => {const el = salesRef.current;
               if (el) {
@@ -687,7 +686,6 @@ export default function Calculator() {
               </div>
             </div>
             <input ref={transportCostRef} type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displayTransportCost)} onChange={handleChange(setTransportCost, setDisplayTransportCost)}
             onClick={() => {const el = transportCostRef.current;
               if (el) {
@@ -769,7 +767,6 @@ export default function Calculator() {
               <li>
                 <label>기타 수수료</label>
                 <input ref={etcFeeRef} type="text" placeholder="0원" className="ect-fee"
-                inputMode="numeric" pattern="[0-9]*"
                 value={formatWon(displaySubFee)} onChange={handleChange(setSubFee, setDisplaySubFee)}
                 onClick={() => {const el = etcFeeRef.current;
               if (el) {
@@ -788,7 +785,6 @@ export default function Calculator() {
               <li>
                 <label>총 수수료</label>
                 <input type="text" placeholder="0원" className="ect-fee"
-                inputMode="numeric" pattern="[0-9]*"
                 value={formatWon(displayTotalFee)}
                 readOnly/>
               </li>
@@ -796,7 +792,6 @@ export default function Calculator() {
             <div className="etc-group">
             <label>매출 시 발생 할 기타 비용</label>
             <input ref={subCostRef} type="text" placeholder="0원"
-            inputMode="numeric" pattern="[0-9]*"
             value={formatWon(displayCost)} onChange={handleChange(setCost, setDisplayCost)}
             onClick={() => {const el = subCostRef.current;
               if (el) {
@@ -853,9 +848,8 @@ export default function Calculator() {
           </div>
         </div>
         <div className="calculator-actions">
-          <button type="submit" onSubmit={submit} className="submit-button">저장하기</button>
+          <button onClick={submit} className="submit-button">저장하기</button>
         </div>
-          
       </form>
     </section>
   );
