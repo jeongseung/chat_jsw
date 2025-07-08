@@ -22,7 +22,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         
         // 프론트엔드로 JWT 토큰을 담아 리디렉션
         // 실제 프론트엔드 주소로 변경해야 합니다.
-        String redirectUrl = "http://43.201.67.86:173/oauth/redirect?token=" + jwt;
+        String redirectUrl = "http://43.201.67.86:5173/oauth/redirect?token=" + jwt;
         response.sendRedirect(redirectUrl);
     }
 }
