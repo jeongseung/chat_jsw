@@ -1,14 +1,18 @@
 💸 이익 중심 판매 전략 플랫폼 **Gloring** | 팀명 : ChatJSW
 ===
 
+
 ## 🧾 서비스 소개
 **Gloring**은 초보 수입자도 쉽게 사용할 수 있는, AI 기반의 HS코드 추천 및 관세 계산 웹 서비스입니다.
 무역이나 수입이 처음인 사용자(소상공인, 셀러, 일반인)도 복잡한 통관 정보를 쉽게 확인하고 활용할 수 있도록 도와주는 웹 서비스입니다.
 HS코드 추천, FTA 적용 여부확인, 관세 계산, 순이익 시뮬레이션 등 수입 전 과정을 이해하고 전략을 세울 수 있는 기능을 제공합니다.
 
+<br>
 
 ## 📅 프로젝트 기간
 2025.05.22 ~ 2025.07.08 (약 6주)
+
+<br>
 
 ## 🛠 주요기능
 | 기능                     | 설명                                                         |
@@ -18,6 +22,8 @@ HS코드 추천, FTA 적용 여부확인, 관세 계산, 순이익 시뮬레이�
 | 💰 **관세 계산기**          | 수입 단가, 물류비, 기타 비용 등을 입력하면 관세 + 세금 + FTA 적용 여부를 반영한 총 비용 계산 |
 | 📈 **순이익 시뮬레이션**       | 판매가를 기준으로 예상 순이익과 수익률을 자동 계산                               |
 | 📝 **계산 이력 저장 및 불러오기** | 사용자가 이전에 계산한 기록을 저장하고 클릭하여 다시 불러올 수 있음                     |
+
+<br>
 
 ## 🛠️ 기술 스택 정리 (Tech Stack)
 | 구분     | 사용 기술       | 
@@ -30,6 +36,7 @@ HS코드 추천, FTA 적용 여부확인, 관세 계산, 순이익 시뮬레이�
 |**🚀 CI/CD & Deployment**    |![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white)         |
 |**🤝 Collaboration & Design** |![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white) ![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)    |
 
+<br>
 
 ## 시스템 아키텍쳐
 
