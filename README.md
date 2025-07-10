@@ -49,7 +49,7 @@ HS코드 추천, FTA 적용 여부확인, 관세 계산, 순이익 시뮬레이�
 ## 🖥 화면 구성
 
 ## ✨ 팀원 역할
-|이미지      |이미지       |이미지       |이미지       |
+|![Image](https://github.com/user-attachments/assets/4685877d-2211-49b4-ad14-aed8e8c8e21f)     |<img width="480" height="480" alt="Image" src="https://github.com/user-attachments/assets/995fd66f-6b06-441b-875f-e7fc518b171a" />       |![Image](https://github.com/user-attachments/assets/612365d9-f2db-4271-8215-66cd19a8a7e0)       |![Image](https://github.com/user-attachments/assets/1d516aae-cfcf-4732-a3f7-babac4fa20e2)       |
 |------|-------|-------|-------|
 |정승우 |정다훈 |김수연 |강윤지 |
 |팀장, Backend |Frontend |Frontend |Frontend |
