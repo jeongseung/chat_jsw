@@ -39,6 +39,7 @@ HS코드 추천, FTA 적용 여부확인, 관세 계산, 순이익 시뮬레이�
 <br>
 
 ## 시스템 아키텍쳐
+<img width="2348" height="1709" alt="Image" src="https://github.com/user-attachments/assets/f8ca00c0-c777-4537-a7f6-78d618f13595" />
 
 ## 유스케이스
 
